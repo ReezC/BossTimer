@@ -114,6 +114,14 @@ def load_data(path: str = "data.json") -> dict:
 
 
 def save_data(data: dict, path: str = "data.json") -> None:
-    """将数据写回 JSON 文件。"""
-    with open(path, "w", encoding="utf-8") as f:
+    """将数据原子地写回 JSON 文件。
+
+    先写入同目录下的临时文件，再替换目标文件，避免写入中断导致文件损坏。
+    写入失败时抛出 OSError，由调用方处理。
+    """
+    directory = os.path.dirname(os.path.abspath(path))
+    os.makedirs(directory, exist_ok=True)
+    tmp_path = path + ".tmp"
+    with open(tmp_path, "w", encoding="utf-8") as f:
         json.dump(data, f, ensure_ascii=False, indent=2)
+    os.replace(tmp_path, path)
