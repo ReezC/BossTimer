@@ -32,6 +32,30 @@ STATUS_DISPLAY = {
     Status.EXPIRED: ("已刷新", "#F44336"),
 }
 
+def _center_over_parent(toplevel: tk.Toplevel, parent) -> None:
+    """将弹窗居中于父窗口（父窗口可跨显示器，按屏幕绝对坐标定位）。
+
+    注意：跨显示器时父窗口坐标可能为负（副显示器在主显示器左侧/上方），
+    因此不能对坐标做 max(0, ...) 截断，否则弹窗会被拉回主显示器。
+    """
+    def _apply():
+        parent.update_idletasks()
+        w = toplevel.winfo_width()
+        h = toplevel.winfo_height()
+        px = parent.winfo_rootx()
+        py = parent.winfo_rooty()
+        pw = parent.winfo_width()
+        ph = parent.winfo_height()
+        x = px + (pw - w) // 2
+        y = py + (ph - h) // 2
+        toplevel.geometry(f"+{x}+{y}")
+
+    # 先立即定位一次，再延迟一次兜底（确保窗口映射后尺寸准确）
+    toplevel.update_idletasks()
+    _apply()
+    toplevel.after(50, _apply)
+
+
 # 每行固定显示的格子列数
 GRID_COLUMNS = 6
 
@@ -84,9 +108,10 @@ class MainWindow:
         self.tab_frame = None
         self.tab_buttons = {}  # index -> (标签 Frame, 文本 Label, 关闭 Label)
 
+        self._build_filebar()
         self._build_clock()
         self._build_tabbar()
-        self._build_filebar()
+        self._build_channelbar()
         self._build_settings()
         self._build_grid()
 
@@ -104,29 +129,92 @@ class MainWindow:
         self.clock_label.pack()
 
     def _build_tabbar(self):
-        """构建页签栏（第一行，仅页签）。"""
+        """构建页签栏（第一行，仅页签），下方带分隔线。"""
         self.tabbar_frame = tk.Frame(self.root)
         self.tabbar_frame.pack(fill="x", padx=10, pady=(5, 0))
 
         # 动态页签容器
         self.tab_frame = tk.Frame(self.tabbar_frame)
-        self.tab_frame.pack(side="left", fill="x")
+        self.tab_frame.pack(side="top", fill="x")
+
+        # 分隔线
+        separator = tk.Frame(self.tabbar_frame, height=1, bg="#CCCCCC")
+        separator.pack(side="top", fill="x")
 
     def _build_filebar(self):
-        """构建文件操作栏（第二行，始终可见）：新建文件 + 读取文件。"""
-        self.filebar_frame = tk.Frame(self.root)
-        self.filebar_frame.pack(fill="x", padx=10, pady=(5, 0))
+        """构建文件操作栏（顶部工具栏，Windows 98 银灰配色，始终可见）。"""
+        self.filebar_frame = tk.Frame(self.root, bg="#C0C0C0")
+        self.filebar_frame.pack(fill="x", padx=0, pady=0)
 
-        # "新建文件"在左，"读取文件"在右
+        # 内层容器用于控制内边距
+        inner = tk.Frame(self.filebar_frame, bg="#C0C0C0")
+        inner.pack(fill="x", padx=6, pady=4)
+
+        # "新建文件"在左，"读取文件"在右（Win98 凸起立体按钮）
         new_btn = tk.Button(
-            self.filebar_frame, text="新建文件", command=self._new_file
+            inner,
+            text="新建文件",
+            command=self._new_file,
+            bg="#C0C0C0",
+            fg="#000000",
+            activebackground="#C0C0C0",
+            activeforeground="#000000",
+            relief="raised",
+            bd=1,
+            padx=8,
+            pady=2,
         )
-        new_btn.pack(side="left", padx=(0, 10))
+        new_btn.pack(side="left", padx=(0, 4))
 
         open_btn = tk.Button(
-            self.filebar_frame, text="读取文件", command=self._load_from_file
+            inner,
+            text="读取文件",
+            command=self._load_from_file,
+            bg="#C0C0C0",
+            fg="#000000",
+            activebackground="#C0C0C0",
+            activeforeground="#000000",
+            relief="raised",
+            bd=1,
+            padx=8,
+            pady=2,
         )
-        open_btn.pack(side="left")
+        open_btn.pack(side="left", padx=(0, 4))
+
+        help_btn = tk.Button(
+            inner,
+            text="帮助",
+            command=self._show_help,
+            bg="#C0C0C0",
+            fg="#000000",
+            activebackground="#C0C0C0",
+            activeforeground="#000000",
+            relief="raised",
+            bd=1,
+            padx=8,
+            pady=2,
+        )
+        help_btn.pack(side="left")
+
+    def _build_channelbar(self):
+        """构建频道操作栏（第三行）：增加频道 + 删除频道 + 一键设为未记录。"""
+        self.channelbar_frame = tk.Frame(self.root)
+        self.channelbar_frame.pack(fill="x", padx=10, pady=(5, 0))
+
+        tk.Button(
+            self.channelbar_frame, text="+ 增加频道", command=self._add_channel
+        ).pack(side="left", padx=(0, 10))
+
+        tk.Button(
+            self.channelbar_frame, text="- 删除频道", command=self._remove_channel
+        ).pack(side="left", padx=(0, 10))
+
+        tk.Button(
+            self.channelbar_frame,
+            text="一键设为未记录",
+            command=self._reset_all,
+            fg="#F44336",
+        ).pack(side="left")
 
     def _build_settings(self):
         self.settings_frame = tk.Frame(self.root)
@@ -143,21 +231,6 @@ class MainWindow:
 
         tk.Button(
             self.settings_frame, text="应用", command=self._apply_settings
-        ).pack(side="left", padx=(0, 10))
-
-        tk.Button(
-            self.settings_frame, text="+ 增加频道", command=self._add_channel
-        ).pack(side="left", padx=(0, 10))
-
-        tk.Button(
-            self.settings_frame, text="- 删除频道", command=self._remove_channel
-        ).pack(side="left", padx=(0, 10))
-
-        tk.Button(
-            self.settings_frame,
-            text="一键重置",
-            command=self._reset_all,
-            fg="#F44336",
         ).pack(side="left")
 
     def _build_grid(self):
@@ -325,12 +398,14 @@ class MainWindow:
     # ---------- 空状态 ----------
 
     def _update_empty_state(self):
-        """根据是否有聚焦文件，显示/隐藏设置栏与格子（文件操作栏始终可见）。"""
+        """根据是否有聚焦文件，显示/隐藏频道操作栏、设置栏与格子（文件操作栏始终可见）。"""
         has_data = self.data is not None
         if has_data:
+            self.channelbar_frame.pack(fill="x", padx=10, pady=5)
             self.settings_frame.pack(fill="x", padx=10, pady=5)
             self.grid_container.pack(fill="both", expand=True, padx=10, pady=10)
         else:
+            self.channelbar_frame.pack_forget()
             self.settings_frame.pack_forget()
             self.grid_container.pack_forget()
 
@@ -391,6 +466,9 @@ class MainWindow:
         result = self.on_new_file(name)
         if isinstance(result, str):
             messagebox.showerror("新建失败", result)
+
+    def _show_help(self):
+        HelpDialog(self.root)
 
     # ---------- 设置与频道操作 ----------
 
@@ -484,7 +562,10 @@ class MainWindow:
             )
             cell.tag_configure("green", foreground="#29B6F6")
             cell.tag_configure("small", font=("Arial", CELL_SMALL_FONT_SIZE))
-            cell.bind("<Button-1>", lambda e, cid=ch["id"]: self._open_edit_dialog(cid))
+            cell.bind(
+                "<Button-1>",
+                lambda e, cid=ch["id"]: self._open_edit_dialog(cid, e.x_root, e.y_root),
+            )
             row = idx // GRID_COLUMNS
             col = idx % GRID_COLUMNS
             cell.grid(row=row, column=col, padx=5, pady=5)
@@ -599,13 +680,13 @@ class MainWindow:
 
     # ---------- 编辑弹窗 ----------
 
-    def _open_edit_dialog(self, channel_id: int):
+    def _open_edit_dialog(self, channel_id: int, x: int = 0, y: int = 0):
         channel = next(
             (c for c in self._get_channels() if c["id"] == channel_id), None
         )
         if channel is None:
             return
-        ChannelEditDialog(self.root, channel, self._on_edit_apply)
+        ChannelEditDialog(self.root, channel, self._on_edit_apply, x, y)
 
     def _on_edit_apply(self, channel: dict):
         """编辑弹窗提交后的回调，更新对应频道并刷新。"""
@@ -620,7 +701,7 @@ class MainWindow:
 class ChannelEditDialog(tk.Toplevel):
     """频道编辑弹窗：展示频道信息，提供初始化与自定义击杀时间按钮。"""
 
-    def __init__(self, parent, channel: dict, on_apply):
+    def __init__(self, parent, channel: dict, on_apply, x: int = 0, y: int = 0):
         super().__init__(parent)
         self.channel = channel
         self.on_apply = on_apply
@@ -629,6 +710,13 @@ class ChannelEditDialog(tk.Toplevel):
         self.resizable(False, False)
         self.transient(parent)
         self.grab_set()
+
+        # 定位到鼠标点击位置（x, y 为屏幕坐标），使弹窗中心对齐鼠标
+        if x or y:
+            self.update_idletasks()
+            w = self.winfo_width()
+            h = self.winfo_height()
+            self.geometry(f"+{x - w // 2}+{y - h // 2}")
 
         tk.Label(
             self,
@@ -730,10 +818,27 @@ class KillTimeDialog(tk.Toplevel):
             self,
             text="格式：YYYY-MM-DD HH:MM:SS",
             fg="#888888",
-        ).pack(padx=20, pady=(0, 10))
+        ).pack(padx=20, pady=(0, 5))
+
+        # 增加分钟：输入框 + √ 按钮
+        add_frame = tk.Frame(self)
+        add_frame.pack(padx=20, pady=(0, 10))
+
+        tk.Label(add_frame, text="增加分钟:").pack(side="left")
+        self.minutes_entry = tk.Entry(add_frame, width=6)
+        self.minutes_entry.pack(side="left", padx=(5, 5))
+        tk.Button(
+            add_frame,
+            text="√",
+            width=2,
+            command=self._add_minutes,
+            bg="#81C784",
+            fg="#FFFFFF",
+            activebackground="#66BB6A",
+        ).pack(side="left")
 
         btn_frame = tk.Frame(self)
-        btn_frame.pack(padx=20, pady=(0, 10))
+        btn_frame.pack(padx=20, pady=(0, 20))
         tk.Button(
             btn_frame,
             text="确定",
@@ -753,13 +858,6 @@ class KillTimeDialog(tk.Toplevel):
             activebackground="#757575",
         ).pack(side="left", padx=5)
 
-        tk.Button(
-            self,
-            text="一键记录为10s前",
-            width=24,
-            command=self._record_10s_ago,
-        ).pack(padx=20, pady=(0, 20))
-
     def _default_text(self) -> str:
         """预填文本：优先使用该频道已记录的基准时间，否则用当前时间。"""
         base_time = self.channel.get("base_time", "")
@@ -771,15 +869,28 @@ class KillTimeDialog(tk.Toplevel):
                 pass
         return get_server_time().strftime("%Y-%m-%d %H:%M:%S")
 
-    def _record_10s_ago(self):
-        """将击杀时间一键记录为当前时间前 10 秒。"""
+    def _add_minutes(self):
+        """在当前击杀时间基础上增加指定分钟数，并更新输入框显示。"""
         from datetime import timedelta
 
-        dt = get_server_time() - timedelta(seconds=10)
-        self.channel["base_time"] = dt.isoformat()
-        self.channel["source"] = "kill"
-        self.on_apply(self.channel)
-        self.destroy()
+        minutes_text = self.minutes_entry.get().strip()
+        try:
+            minutes = int(minutes_text)
+        except ValueError:
+            messagebox.showerror("输入错误", "增加分钟数必须为整数。")
+            return
+
+        text = self.entry.get().strip()
+        try:
+            dt = datetime.strptime(text, "%Y-%m-%d %H:%M:%S")
+        except ValueError:
+            messagebox.showerror("输入错误", "时间格式不正确，应为 YYYY-MM-DD HH:MM:SS。")
+            return
+
+        dt = dt + timedelta(minutes=minutes)
+        new_text = dt.strftime("%Y-%m-%d %H:%M:%S")
+        self.entry.delete(0, "end")
+        self.entry.insert(0, new_text)
 
     def _confirm(self):
         text = self.entry.get().strip()
@@ -857,6 +968,8 @@ class FileSelectDialog(tk.Toplevel):
             side="left", padx=5
         )
 
+        _center_over_parent(self, parent)
+
     def _selected_name(self):
         if self.listbox is None:
             return None
@@ -900,6 +1013,40 @@ class FileSelectDialog(tk.Toplevel):
         """阻塞等待并返回用户选择的文件名（不含扩展名），取消返回 None。"""
         self.wait_window()
         return self._result
+
+
+class HelpDialog(tk.Toplevel):
+    """帮助弹窗：展示说明文字（可多行换行），含"我知道了"按钮。"""
+
+    HELP_TEXT = "摸索摸索就会啦！\n如果有建议请告诉我。\n请多帮助等级低的小朋友吧！"
+
+    def __init__(self, parent):
+        super().__init__(parent)
+        self.transient(parent)
+        self.grab_set()
+        self.title("帮助")
+        self.resizable(False, False)
+
+        tk.Label(
+            self,
+            text=self.HELP_TEXT,
+            font=("Arial", 10),
+            justify="left",
+            padx=20,
+            pady=16,
+        ).pack()
+
+        tk.Button(
+            self,
+            text="我知道了",
+            width=12,
+            command=self.destroy,
+            bg="#4CAF50",
+            fg="#FFFFFF",
+            activebackground="#43A047",
+        ).pack(padx=20, pady=(0, 20))
+
+        _center_over_parent(self, parent)
 
 
 

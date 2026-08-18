@@ -247,7 +247,7 @@
       "name": "频道31",
       "base_time": "2026-08-18T19:20:22",
       "source": "kill",
-      "recorded": true,
+      "recorded": false,
       "checked_time": ""
     },
     {
@@ -263,7 +263,7 @@
       "name": "频道33",
       "base_time": "2026-08-18T16:01:08",
       "source": "kill",
-      "recorded": true,
+      "recorded": false,
       "checked_time": ""
     },
     {

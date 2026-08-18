@@ -5,18 +5,18 @@
     {
       "id": 1,
       "name": "频道1",
-      "base_time": "2026-08-17T22:43:23.146909",
+      "base_time": "2026-08-19T00:51:35.322383",
       "source": "init",
       "recorded": false,
-      "checked_time": "2026-08-17T22:46:27.051216"
+      "checked_time": ""
     },
     {
       "id": 2,
       "name": "频道2",
-      "base_time": "2026-08-16T16:01:03.587113",
+      "base_time": "2026-08-19T00:51:25.997613",
       "source": "init",
       "recorded": false,
-      "checked_time": "2026-08-17T01:47:22.100664"
+      "checked_time": ""
     },
     {
       "id": 3,

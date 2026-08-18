@@ -29,9 +29,9 @@
     {
       "id": 4,
       "name": "频道4",
-      "base_time": "2026-08-19T00:42:40.414925",
+      "base_time": "2026-08-19T01:22:35.488333",
       "source": "init",
-      "recorded": false,
+      "recorded": true,
       "checked_time": ""
     },
     {
