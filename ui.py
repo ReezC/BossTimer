@@ -17,7 +17,9 @@ from models import (
     Status,
     compute_checked_text,
     compute_countdown_text,
+    compute_earliest_time,
     compute_status,
+    format_base_time,
     get_server_time,
     is_expired_beyond,
 )
@@ -426,8 +428,10 @@ class MainWindow:
                 relief="raised",
                 cursor="hand2",
                 highlightthickness=0,
+                wrap="none",
             )
             cell.tag_configure("green", foreground="#29B6F6")
+            cell.tag_configure("small", font=("Arial", 8))
             cell.bind("<Button-1>", lambda e, cid=ch["id"]: self._open_edit_dialog(cid))
             row = idx // GRID_COLUMNS
             col = idx % GRID_COLUMNS
@@ -467,30 +471,62 @@ class MainWindow:
                 continue
 
             status = compute_status(ch["base_time"], now, lower, upper)
-            label_text, color = STATUS_DISPLAY[status]
+            color = STATUS_DISPLAY[status][1]
             countdown = compute_countdown_text(ch["base_time"], now, lower, upper)
+            last_kill = format_base_time(ch.get("base_time", ""))
 
-            self._set_cell_text(cell, f"{ch['name']}\n{label_text}", countdown, color)
+            # 有记录：第1行频道名（普通字），第2行"上次：{击杀时间}"（小字），第3行倒计时
+            head = ch["name"]
+            small_head = f"上次：{last_kill}" if last_kill else ""
+            extra_tail = ""
+            if status == Status.PENDING:
+                # 待刷新：额外小字行，显示最早刷新时间 = base + a
+                earliest = compute_earliest_time(ch.get("base_time", ""), lower)
+                if earliest:
+                    extra_tail = f"({earliest})"
+
+            self._set_cell_text(
+                cell,
+                head,
+                countdown,
+                color,
+                highlight_tail=False,
+                small_tail=extra_tail,
+                small_head=small_head,
+            )
 
     def _set_cell_text(
-        self, cell: tk.Text, head: str, tail: str, bg: str, highlight_tail: bool = False
+        self,
+        cell: tk.Text,
+        head: str,
+        tail: str,
+        bg: str,
+        highlight_tail: bool = False,
+        small_tail: str = "",
+        small_head: str = "",
     ):
         """设置格子内容并居中。
 
         highlight_tail=True 时，尾部（倒计时）套用蓝色 tag；
-        否则尾部与头部一样使用默认前景色（白色）。
+        small_head 非空时，作为头部之后的小字行（"上次：..."）；
+        small_tail 非空时，作为最后一行小字追加（仅待刷新状态使用）。
         """
         cell.config(state="normal", bg=bg)
         cell.delete("1.0", "end")
 
+        cell.insert("1.0", head)
+        if small_head:
+            cell.insert("end", "\n" + small_head, "small")
+
         if tail:
-            cell.insert("1.0", head + "\n")
+            cell.insert("end", "\n")
             if highlight_tail:
                 cell.insert("end", tail, "green")
             else:
                 cell.insert("end", tail)
-        else:
-            cell.insert("1.0", head)
+
+        if small_tail:
+            cell.insert("end", "\n" + small_tail, "small")
 
         # 整块居中
         cell.tag_configure("center", justify="center")

@@ -135,7 +135,7 @@
       "name": "频道17",
       "base_time": "2026-08-18T18:45:46",
       "source": "kill",
-      "recorded": true,
+      "recorded": false,
       "checked_time": ""
     },
     {
@@ -357,17 +357,17 @@
     {
       "id": 45,
       "name": "频道45",
-      "base_time": "2026-08-18T18:16:52",
+      "base_time": "2026-08-18T19:06:52",
       "source": "kill",
-      "recorded": true,
+      "recorded": false,
       "checked_time": ""
     },
     {
       "id": 46,
       "name": "频道46",
-      "base_time": "2026-08-18T18:35:30",
+      "base_time": "2026-08-18T19:18:55.081139",
       "source": "kill",
-      "recorded": true,
+      "recorded": false,
       "checked_time": ""
     },
     {
@@ -407,7 +407,7 @@
       "name": "频道51",
       "base_time": "2026-08-17T18:25:23",
       "source": "kill",
-      "recorded": true,
+      "recorded": false,
       "checked_time": ""
     },
     {
@@ -471,7 +471,7 @@
       "name": "频道59",
       "base_time": "2026-08-18T18:45:19",
       "source": "kill",
-      "recorded": true,
+      "recorded": false,
       "checked_time": ""
     },
     {

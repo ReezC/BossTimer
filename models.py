@@ -187,6 +187,25 @@ def compute_checked_text(
     return f"经过:{format_duration(elapsed.total_seconds())}"
 
 
+def format_base_time(base_time: str) -> str:
+    """将基准时间格式化为 "HH:MM:SS" 供格子显示；非法时返回空串。"""
+    try:
+        base = datetime.fromisoformat(base_time)
+    except (ValueError, TypeError):
+        return ""
+    return base.strftime("%H:%M:%S")
+
+
+def compute_earliest_time(base_time: str, a_minutes: float) -> str:
+    """计算"最早刷新时间"（= base_time + a 分钟），返回 "HH:MM:SS"；非法时返回空串。"""
+    try:
+        base = datetime.fromisoformat(base_time)
+    except (ValueError, TypeError):
+        return ""
+    earliest = base + timedelta(minutes=a_minutes)
+    return earliest.strftime("%H:%M:%S")
+
+
 def get_server_time() -> datetime:
     """时间来源抽象。
 
