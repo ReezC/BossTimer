@@ -108,7 +108,7 @@ def is_expired_beyond(base_time: str, now: datetime, b_minutes: float, factor: f
 
 
 def format_duration(seconds: float) -> str:
-    """将秒数格式化为 "X天X小时X分X秒" 的可读文本，省略前导零单位。"""
+    """将秒数格式化为 "X天XhXmXs" 的可读文本，省略前导零单位。"""
     seconds = int(seconds)
     if seconds < 0:
         seconds = 0
@@ -118,12 +118,12 @@ def format_duration(seconds: float) -> str:
 
     parts = []
     if days:
-        parts.append(f"{days}天")
+        parts.append(f"{days}d")
     if hours:
-        parts.append(f"{hours}小时")
+        parts.append(f"{hours}h")
     if minutes:
-        parts.append(f"{minutes}分")
-    parts.append(f"{secs}秒")
+        parts.append(f"{minutes}m")
+    parts.append(f"{secs}s")
     return "".join(parts)
 
 
@@ -142,7 +142,7 @@ def compute_countdown_text(
     try:
         base = datetime.fromisoformat(base_time)
     except (ValueError, TypeError):
-        return "已超时:0秒"
+        return "已超时:0s"
 
     elapsed = now - base
 

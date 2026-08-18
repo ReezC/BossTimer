@@ -23,22 +23,22 @@ def _dt(s: str) -> datetime:
 
 class TestFormatDuration(unittest.TestCase):
     def test_zero(self):
-        self.assertEqual(format_duration(0), "0秒")
+        self.assertEqual(format_duration(0), "0s")
 
     def test_negative_clamped_to_zero(self):
-        self.assertEqual(format_duration(-5), "0秒")
+        self.assertEqual(format_duration(-5), "0s")
 
     def test_seconds_only(self):
-        self.assertEqual(format_duration(45), "45秒")
+        self.assertEqual(format_duration(45), "45s")
 
     def test_minutes_and_seconds(self):
-        self.assertEqual(format_duration(90), "1分30秒")
+        self.assertEqual(format_duration(90), "1m30s")
 
     def test_hours(self):
-        self.assertEqual(format_duration(3661), "1小时1分1秒")
+        self.assertEqual(format_duration(3661), "1h1m1s")
 
     def test_days(self):
-        self.assertEqual(format_duration(90061), "1天1小时1分1秒")
+        self.assertEqual(format_duration(90061), "1d1h1m1s")
 
 
 class TestComputeStatus(unittest.TestCase):
@@ -75,20 +75,20 @@ class TestComputeCountdownText(unittest.TestCase):
     def test_pending_remaining(self):
         now = _dt("2026-08-18 10:00:00")
         base = "2026-08-18 09:50:00"  # 10 分钟前，距 a 还有 15 分钟
-        self.assertEqual(compute_countdown_text(base, now, 25, 35), "剩余:15分0秒")
+        self.assertEqual(compute_countdown_text(base, now, 25, 35), "剩余:15m0s")
 
     def test_window_elapsed_since_a(self):
         now = _dt("2026-08-18 10:00:00")
         base = "2026-08-18 09:30:00"  # 30 分钟前，已进入窗口 5 分钟
-        self.assertEqual(compute_countdown_text(base, now, 25, 35), "已经过:5分0秒")
+        self.assertEqual(compute_countdown_text(base, now, 25, 35), "已经过:5m0s")
 
     def test_expired_overtime(self):
         now = _dt("2026-08-18 10:00:00")
         base = "2026-08-18 09:00:00"  # 60 分钟前，超时 25 分钟
-        self.assertEqual(compute_countdown_text(base, now, 25, 35), "已超时:25分0秒")
+        self.assertEqual(compute_countdown_text(base, now, 25, 35), "已超时:25m0s")
 
     def test_invalid_base(self):
-        self.assertEqual(compute_countdown_text("bad", _dt("2026-08-18 10:00:00"), 25, 35), "已超时:0秒")
+        self.assertEqual(compute_countdown_text("bad", _dt("2026-08-18 10:00:00"), 25, 35), "已超时:0s")
 
 
 class TestComputeCheckedText(unittest.TestCase):
@@ -98,7 +98,7 @@ class TestComputeCheckedText(unittest.TestCase):
     def test_within_a_elapsed(self):
         now = _dt("2026-08-18 10:00:00")
         checked = "2026-08-18 09:55:00"  # 5 分钟前
-        self.assertEqual(compute_checked_text(checked, now, 25), "经过:5分0秒")
+        self.assertEqual(compute_checked_text(checked, now, 25), "经过:5m0s")
 
     def test_beyond_a_returns_empty(self):
         now = _dt("2026-08-18 10:00:00")

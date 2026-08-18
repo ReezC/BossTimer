@@ -135,7 +135,6 @@ class App:
         self.window = MainWindow(
             root,
             on_change=self.on_change,
-            on_save_file=self.on_save_file,
             on_load_file=self.on_load_file,
             on_new_file=self.on_new_file,
             on_list_files=list_data_files,
@@ -189,25 +188,6 @@ class App:
         cur = self._current()
         if cur is not None:
             self._save_current(cur)
-
-    def on_save_file(self, name: str):
-        """将当前聚焦文件的数据另存为到用户命名的文件。
-
-        返回 None 表示成功，返回 str 表示错误信息。
-        """
-        if not _is_valid_name(name):
-            return "文件名不合法。"
-        cur = self._current()
-        if cur is None:
-            return "当前没有打开的文件。"
-        path = _normalize_filename(name)
-        err = self._save_current({"data": cur["data"], "path": path})
-        if err is not None:
-            return err
-        cur["name"] = name
-        cur["path"] = path
-        self._commit()
-        return None
 
     def on_load_file(self, name: str):
         """新打开一个文件（作为新页签），而非替换当前文件。
@@ -355,14 +335,45 @@ def main():
     _ensure_dirs()
     root = tk.Tk()
 
-    # 设置默认窗口尺寸并居中显示（宽度贴合 6 列频道格子，高度可滚动）
+    # 设置默认窗口宽度并居中显示（高度在加载后动态自适应频道数）
     root.geometry("800x800")
     _center_window(root, 800, 800)
 
     app = App(root)
     app.restore_last_session()
+
+    # 动态调整窗口高度，使其能完整显示所有频道（最多不超过屏幕）
+    _fit_window_height(root, app, 800)
+
     root.protocol("WM_DELETE_WINDOW", app.on_close)
     root.mainloop()
+
+
+def _fit_window_height(root: tk.Tk, app: "App", width: int) -> None:
+    """根据频道格子实际所需高度，调整窗口高度以完整显示所有频道。"""
+    root.update_idletasks()
+    try:
+        grid_frame = app.window.grid_frame
+        required = grid_frame.winfo_reqheight()
+    except (AttributeError, tk.TclError):
+        return
+    if required <= 0:
+        return
+
+    # 顶部控件（时钟/页签/文件操作栏/设置栏）大致高度
+    top_bar = 180
+    target_height = top_bar + required + 40  # 额外留白
+
+    # 限制不超过屏幕高度
+    screen_h = root.winfo_screenheight()
+    target_height = min(target_height, screen_h - 80)
+
+    # 避免窗口过矮
+    target_height = max(target_height, 500)
+
+    x = max(0, (root.winfo_screenwidth() - width) // 2)
+    y = max(0, (screen_h - target_height) // 2)
+    root.geometry(f"{width}x{target_height}+{x}+{y}")
 
 
 def _center_window(root: tk.Tk, width: int, height: int) -> None:

@@ -51,7 +51,6 @@ class MainWindow:
         self,
         root: tk.Tk,
         on_change=None,
-        on_save_file=None,
         on_load_file=None,
         on_new_file=None,
         on_list_files=None,
@@ -62,7 +61,6 @@ class MainWindow:
     ):
         self.root = root
         self.on_change = on_change  # 数据变更回调（用于持久化）
-        self.on_save_file = on_save_file  # 保存到指定文件回调
         self.on_load_file = on_load_file  # 新打开文件回调
         self.on_new_file = on_new_file  # 新建文件回调
         self.on_list_files = on_list_files  # 列出已有数据文件的回调
@@ -88,8 +86,8 @@ class MainWindow:
 
         self._build_clock()
         self._build_tabbar()
-        self._build_settings()
         self._build_filebar()
+        self._build_settings()
         self._build_grid()
 
         self._update_empty_state()
@@ -106,25 +104,29 @@ class MainWindow:
         self.clock_label.pack()
 
     def _build_tabbar(self):
-        """构建页签栏：左侧固定"打开文件"按钮，右侧动态页签区。"""
+        """构建页签栏（第一行，仅页签）。"""
         self.tabbar_frame = tk.Frame(self.root)
         self.tabbar_frame.pack(fill="x", padx=10, pady=(5, 0))
-
-        # 始终可见的"打开文件"按钮（空状态时也需要能打开文件）
-        open_btn = tk.Button(
-            self.tabbar_frame, text="从文件读取（新开）", command=self._load_from_file
-        )
-        open_btn.pack(side="left", padx=(0, 10))
-
-        # 始终可见的"新建文件"按钮（空状态时也需要能新建文件）
-        new_btn = tk.Button(
-            self.tabbar_frame, text="新建文件", command=self._new_file
-        )
-        new_btn.pack(side="left", padx=(0, 10))
 
         # 动态页签容器
         self.tab_frame = tk.Frame(self.tabbar_frame)
         self.tab_frame.pack(side="left", fill="x")
+
+    def _build_filebar(self):
+        """构建文件操作栏（第二行，始终可见）：新建文件 + 读取文件。"""
+        self.filebar_frame = tk.Frame(self.root)
+        self.filebar_frame.pack(fill="x", padx=10, pady=(5, 0))
+
+        # "新建文件"在左，"读取文件"在右
+        new_btn = tk.Button(
+            self.filebar_frame, text="新建文件", command=self._new_file
+        )
+        new_btn.pack(side="left", padx=(0, 10))
+
+        open_btn = tk.Button(
+            self.filebar_frame, text="读取文件", command=self._load_from_file
+        )
+        open_btn.pack(side="left")
 
     def _build_settings(self):
         self.settings_frame = tk.Frame(self.root)
@@ -156,13 +158,6 @@ class MainWindow:
             text="一键重置",
             command=self._reset_all,
             fg="#F44336",
-        ).pack(side="left")
-
-    def _build_filebar(self):
-        self.filebar_frame = tk.Frame(self.root)
-
-        tk.Button(
-            self.filebar_frame, text="另存为", command=self._save_to_file
         ).pack(side="left")
 
     def _build_grid(self):
@@ -330,15 +325,13 @@ class MainWindow:
     # ---------- 空状态 ----------
 
     def _update_empty_state(self):
-        """根据是否有聚焦文件，显示/隐藏设置栏、文件栏与格子。"""
+        """根据是否有聚焦文件，显示/隐藏设置栏与格子（文件操作栏始终可见）。"""
         has_data = self.data is not None
         if has_data:
             self.settings_frame.pack(fill="x", padx=10, pady=5)
-            self.filebar_frame.pack(fill="x", padx=10, pady=5)
             self.grid_container.pack(fill="both", expand=True, padx=10, pady=10)
         else:
             self.settings_frame.pack_forget()
-            self.filebar_frame.pack_forget()
             self.grid_container.pack_forget()
 
     # ---------- 数据访问 ----------
@@ -366,21 +359,6 @@ class MainWindow:
             self.upper_var.set(str(self.data["refresh_upper_minutes"]))
         self._update_empty_state()
         self._refresh_channels()
-
-    def _save_to_file(self):
-        """弹窗选择已有文件或新建文件，保存当前聚焦数据到该文件。"""
-        if self.data is None:
-            messagebox.showinfo("提示", "当前没有打开的文件。")
-            return
-        if self.on_save_file is None:
-            messagebox.showinfo("提示", "未提供文件保存功能。")
-            return
-        name = FileSaveDialog(self.root, self.on_list_files).result()
-        if name is None:
-            return
-        result = self.on_save_file(name)
-        if isinstance(result, str):
-            messagebox.showerror("保存失败", result)
 
     def _load_from_file(self):
         """弹窗选择/输入文件名并新打开一个文件（作为新页签）。"""
@@ -668,22 +646,25 @@ class ChannelEditDialog(tk.Toplevel):
         self.recorded_var = tk.BooleanVar(value=bool(channel.get("recorded", False)))
         tk.Checkbutton(
             recorded_row,
-            text="已记录数据（勾选后按时间进入三态）",
+            text="记录当前频道",
             variable=self.recorded_var,
             command=self._toggle_recorded,
         ).pack(side="left")
 
         tk.Button(
             recorded_row,
-            text="记为已查",
+            text="开启蹲守计时",
             command=self._mark_checked,
         ).pack(side="left", padx=(8, 0))
 
         tk.Button(
             self,
-            text="初始化（重置为待刷新）",
+            text="记录当前时间为击杀",
             width=24,
             command=self._do_init,
+            bg="#4CAF50",
+            fg="#FFFFFF",
+            activebackground="#43A047",
         ).pack(padx=20, pady=(10, 5))
 
         tk.Button(
@@ -713,7 +694,9 @@ class ChannelEditDialog(tk.Toplevel):
     def _do_init(self):
         self.channel["base_time"] = get_server_time().isoformat()
         self.channel["source"] = "init"
+        self.channel["recorded"] = True  # 记录击杀时间即视为已记录，格子进入三态
         self.channel["checked_time"] = ""  # 清除"记为已查"，回到默认无时间显示
+        self.recorded_var.set(True)  # 同步勾选框状态
         self.on_apply(self.channel)
         self.destroy()
 
@@ -919,107 +902,4 @@ class FileSelectDialog(tk.Toplevel):
         return self._result
 
 
-class FileSaveDialog(tk.Toplevel):
-    """另存为弹窗：列出已有数据文件供选择覆盖保存，或新建文件（仅新建时手动输入文件名）。"""
 
-    def __init__(self, parent, on_list_files=None):
-        super().__init__(parent)
-        self.transient(parent)
-        self.grab_set()
-        self.title("另存为")
-        self.resizable(False, False)
-        self._result = None
-
-        # 获取已有文件列表
-        self.files = []
-        if on_list_files is not None:
-            try:
-                self.files = list(on_list_files())
-            except Exception:
-                self.files = []
-
-        self.listbox = None
-
-        if self.files:
-            tk.Label(
-                self, text="已有数据文件（点击选择后覆盖保存）：", anchor="w"
-            ).pack(fill="x", padx=20, pady=(15, 5))
-
-            list_frame = tk.Frame(self)
-            list_frame.pack(fill="both", expand=True, padx=20)
-
-            self.listbox = tk.Listbox(list_frame, width=30, height=10)
-            self.listbox.pack(side="left", fill="both", expand=True)
-            scrollbar = tk.Scrollbar(list_frame, orient="vertical")
-            scrollbar.config(command=self.listbox.yview)
-            scrollbar.pack(side="right", fill="y")
-            self.listbox.config(yscrollcommand=scrollbar.set)
-
-            for f in self.files:
-                self.listbox.insert("end", f)
-
-            self.listbox.bind("<Double-Button-1>", lambda e: self._choose_list())
-
-            tk.Button(
-                self, text="覆盖保存到选中的文件", width=20, command=self._choose_list
-            ).pack(pady=5)
-        else:
-            tk.Label(
-                self, text="（暂无已有数据文件）", fg="#888888"
-            ).pack(padx=20, pady=(15, 5))
-
-        # 底部操作按钮
-        btn_frame = tk.Frame(self)
-        btn_frame.pack(padx=20, pady=(10, 20))
-        tk.Button(
-            btn_frame, text="新建文件", width=10, command=self._new_file
-        ).pack(side="left", padx=5)
-        tk.Button(btn_frame, text="取消", width=10, command=self.destroy).pack(
-            side="left", padx=5
-        )
-
-    def _selected_name(self):
-        if self.listbox is None:
-            return None
-        selection = self.listbox.curselection()
-        if not selection:
-            messagebox.showwarning("提示", "请先在列表中选择一个文件。")
-            return None
-        return self.listbox.get(selection[0]).strip()
-
-    def _choose_list(self):
-        name = self._selected_name()
-        if name is None:
-            return
-        # 覆盖已有文件前二次确认
-        if not messagebox.askyesno(
-            "确认覆盖",
-            f"确定要用当前数据覆盖文件「{name}.json」吗？\n此操作不可恢复。",
-            parent=self,
-        ):
-            return
-        self._result = name
-        self.destroy()
-
-    def _new_file(self):
-        """新建文件：手动输入文件名，重复则提示「已有文件」。"""
-        name = simpledialog.askstring(
-            "新建文件", "请输入文件名（不含扩展名）：", parent=self
-        )
-        if name is None:
-            return
-        name = name.strip()
-        if not name:
-            messagebox.showerror("输入错误", "文件名不能为空。")
-            return
-        # 检查是否与已有文件重复
-        if name in self.files or (name + ".json") in self.files:
-            messagebox.showwarning("已有文件", "已有文件")
-            return
-        self._result = name
-        self.destroy()
-
-    def result(self):
-        """阻塞等待并返回用户选择的文件名（不含扩展名），取消返回 None。"""
-        self.wait_window()
-        return self._result
