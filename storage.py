@@ -22,8 +22,8 @@ DEFAULT_UPPER_MINUTES = 35
 DEFAULT_CHANNEL_COUNT = 60
 
 
-def _default_data() -> dict:
-    """生成默认数据（首次运行使用）。
+def new_data() -> dict:
+    """生成一份新的默认数据（新建文件 / 首次运行使用）。
 
     默认频道 recorded=False（未记录数据，灰色），等待用户勾选标记。
     """
@@ -42,6 +42,11 @@ def _default_data() -> dict:
         "refresh_upper_minutes": DEFAULT_UPPER_MINUTES,
         "channels": channels,
     }
+
+
+def _default_data() -> dict:
+    """向后兼容别名（load_data 内部使用）。"""
+    return new_data()
 
 
 def load_data(path: str = "data.json") -> dict:

@@ -28,12 +28,16 @@ from models import (
 STATUS_DISPLAY = {
     Status.UNRECORDED: ("未记录", "#9E9E9E"),
     Status.PENDING: ("待刷新", "#4CAF50"),
-    Status.WINDOW: ("窗口期", "#FFC107"),
+    Status.WINDOW: ("刷新期", "#FFC107"),
     Status.EXPIRED: ("已刷新", "#F44336"),
 }
 
-# 格子网格每行的格子数量
+# 每行固定显示的格子列数
 GRID_COLUMNS = 6
+
+# 格子固定字号
+CELL_FONT_SIZE = 11             # 格子正文
+CELL_SMALL_FONT_SIZE = 8        # 格子小字
 
 # 页签激活/非激活时的背景色
 TAB_ACTIVE_BG = "#FFFFFF"
@@ -49,6 +53,7 @@ class MainWindow:
         on_change=None,
         on_save_file=None,
         on_load_file=None,
+        on_new_file=None,
         on_list_files=None,
         on_delete_file=None,
         on_close_tab=None,
@@ -59,6 +64,7 @@ class MainWindow:
         self.on_change = on_change  # 数据变更回调（用于持久化）
         self.on_save_file = on_save_file  # 保存到指定文件回调
         self.on_load_file = on_load_file  # 新打开文件回调
+        self.on_new_file = on_new_file  # 新建文件回调
         self.on_list_files = on_list_files  # 列出已有数据文件的回调
         self.on_delete_file = on_delete_file  # 删除数据文件的回调
         self.on_close_tab = on_close_tab  # 关闭页签回调
@@ -110,6 +116,12 @@ class MainWindow:
         )
         open_btn.pack(side="left", padx=(0, 10))
 
+        # 始终可见的"新建文件"按钮（空状态时也需要能新建文件）
+        new_btn = tk.Button(
+            self.tabbar_frame, text="新建文件", command=self._new_file
+        )
+        new_btn.pack(side="left", padx=(0, 10))
+
         # 动态页签容器
         self.tab_frame = tk.Frame(self.tabbar_frame)
         self.tab_frame.pack(side="left", fill="x")
@@ -154,7 +166,51 @@ class MainWindow:
         ).pack(side="left")
 
     def _build_grid(self):
-        self.grid_frame = tk.Frame(self.root)
+        # 外层容器：用于整体 pack / pack_forget（空状态切换）
+        self.grid_container = tk.Frame(self.root)
+
+        # 画布 + 滚动条，实现频道格子区域可滚动
+        self.grid_canvas = tk.Canvas(self.grid_container, highlightthickness=0)
+        self.grid_scrollbar = tk.Scrollbar(
+            self.grid_container, orient="vertical", command=self.grid_canvas.yview
+        )
+        self.grid_canvas.configure(yscrollcommand=self.grid_scrollbar.set)
+
+        self.grid_scrollbar.pack(side="right", fill="y")
+        self.grid_canvas.pack(side="left", fill="both", expand=True)
+
+        # 实际承载格子的 frame，放在 canvas 内部
+        self.grid_frame = tk.Frame(self.grid_canvas)
+        self._grid_window_id = self.grid_canvas.create_window(
+            (0, 0), window=self.grid_frame, anchor="nw"
+        )
+
+        # 当 canvas 尺寸变化时，让内部 frame 宽度跟随
+        self.grid_canvas.bind(
+            "<Configure>",
+            lambda e: self.grid_canvas.itemconfigure(
+                self._grid_window_id, width=e.width
+            ),
+        )
+
+        # 支持鼠标滚轮滚动
+        self.grid_frame.bind("<Enter>", lambda e: self._bind_wheel())
+        self.grid_frame.bind("<Leave>", lambda e: self._unbind_wheel())
+
+    def _bind_wheel(self):
+        self.root.bind_all(
+            "<MouseWheel>", self._on_mousewheel, add="+"
+        )
+
+    def _unbind_wheel(self):
+        self.root.unbind_all("<MouseWheel>")
+
+    def _on_mousewheel(self, event):
+        self.grid_canvas.yview_scroll(int(-event.delta / 120), "units")
+
+    def _update_scrollregion(self):
+        """更新画布滚动区域以包含所有格子。"""
+        self.grid_canvas.configure(scrollregion=self.grid_canvas.bbox("all"))
 
     # ---------- 页签栏渲染 ----------
 
@@ -279,11 +335,11 @@ class MainWindow:
         if has_data:
             self.settings_frame.pack(fill="x", padx=10, pady=5)
             self.filebar_frame.pack(fill="x", padx=10, pady=5)
-            self.grid_frame.pack(fill="both", expand=True, padx=10, pady=10)
+            self.grid_container.pack(fill="both", expand=True, padx=10, pady=10)
         else:
             self.settings_frame.pack_forget()
             self.filebar_frame.pack_forget()
-            self.grid_frame.pack_forget()
+            self.grid_container.pack_forget()
 
     # ---------- 数据访问 ----------
 
@@ -339,6 +395,24 @@ class MainWindow:
         result = self.on_load_file(name)
         if isinstance(result, str):
             messagebox.showerror("读取失败", result)
+
+    def _new_file(self):
+        """输入文件名并新建一个空白数据文件（作为新页签）。"""
+        if self.on_new_file is None:
+            messagebox.showinfo("提示", "未提供新建文件功能。")
+            return
+        name = simpledialog.askstring(
+            "新建文件", "请输入文件名（不含扩展名）：", parent=self.root
+        )
+        if name is None:
+            return
+        name = name.strip()
+        if not name:
+            messagebox.showerror("输入错误", "文件名不能为空。")
+            return
+        result = self.on_new_file(name)
+        if isinstance(result, str):
+            messagebox.showerror("新建失败", result)
 
     # ---------- 设置与频道操作 ----------
 
@@ -422,7 +496,7 @@ class MainWindow:
                 self.grid_frame,
                 bg="#4CAF50",
                 fg="#FFFFFF",
-                font=("Arial", 11, "bold"),
+                font=("Arial", CELL_FONT_SIZE, "bold"),
                 width=14,
                 height=4,
                 relief="raised",
@@ -431,7 +505,7 @@ class MainWindow:
                 wrap="none",
             )
             cell.tag_configure("green", foreground="#29B6F6")
-            cell.tag_configure("small", font=("Arial", 8))
+            cell.tag_configure("small", font=("Arial", CELL_SMALL_FONT_SIZE))
             cell.bind("<Button-1>", lambda e, cid=ch["id"]: self._open_edit_dialog(cid))
             row = idx // GRID_COLUMNS
             col = idx % GRID_COLUMNS
@@ -440,6 +514,9 @@ class MainWindow:
 
         # 创建后立即更新一次显示
         self._update_channel_display()
+
+        # 布局完成后更新滚动区域
+        self.root.after(10, self._update_scrollregion)
 
     def _update_channel_display(self):
         """更新已有格子的文本与颜色（不重建控件，避免闪烁）。"""
@@ -471,12 +548,12 @@ class MainWindow:
                 continue
 
             status = compute_status(ch["base_time"], now, lower, upper)
-            color = STATUS_DISPLAY[status][1]
+            status_label, color = STATUS_DISPLAY[status]
             countdown = compute_countdown_text(ch["base_time"], now, lower, upper)
             last_kill = format_base_time(ch.get("base_time", ""))
 
-            # 有记录：第1行频道名（普通字），第2行"上次：{击杀时间}"（小字），第3行倒计时
-            head = ch["name"]
+            # 有记录：第1行"频道名(状态)"，第2行"上次：{击杀时间}"（小字），第3行倒计时
+            head = f"{ch['name']}({status_label})"
             small_head = f"上次：{last_kill}" if last_kill else ""
             extra_tail = ""
             if status == Status.PENDING:

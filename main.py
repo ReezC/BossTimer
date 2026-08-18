@@ -5,13 +5,29 @@
 
 import json
 import os
+import sys
 
 import tkinter as tk
 
-from storage import load_data, save_data
+from storage import load_data, new_data, save_data
 from ui import MainWindow
 
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
+def _app_base_dir() -> str:
+    """返回程序运行基目录。
+
+    PyInstaller --onefile 打包后，__file__ 指向临时解压目录（sys._MEIPASS），
+    数据若写在那里会在退出后丢失。因此：
+    - 打包成 exe 时，使用 exe 所在目录（sys.executable 的目录），数据持久化在 exe 旁边；
+    - 源码运行时，使用脚本所在目录。
+    """
+    if getattr(sys, "frozen", False):
+        # 打包运行：exe 所在目录
+        return os.path.dirname(os.path.abspath(sys.executable))
+    return os.path.dirname(os.path.abspath(__file__))
+
+
+BASE_DIR = _app_base_dir()
 DATA_DIR = os.path.join(BASE_DIR, "data")  # 用户数据文件目录
 STATE_DIR = os.path.join(BASE_DIR, ".bosstimer")  # 内部状态文件目录
 DATA_PATH = os.path.join(DATA_DIR, "data.json")
@@ -20,6 +36,9 @@ LAST_FILES_PATH = os.path.join(STATE_DIR, "last_files.json")
 
 # 文件名中禁止出现的字符（避免路径穿越/非法路径）
 _INVALID_NAME_CHARS = set('\\/:*?"<>|')
+
+# 窗口标题版权后缀
+TITLE_SUFFIX = "made by 小曰哥 qq958679431 请勿商用"
 
 
 def _ensure_dirs() -> None:
@@ -118,6 +137,7 @@ class App:
             on_change=self.on_change,
             on_save_file=self.on_save_file,
             on_load_file=self.on_load_file,
+            on_new_file=self.on_new_file,
             on_list_files=list_data_files,
             on_delete_file=self.on_delete_file,
             on_close_tab=self.on_close_tab,
@@ -144,7 +164,8 @@ class App:
 
     def _update_title(self):
         cur = self._current()
-        self.root.title(self._display_name(cur["name"]) if cur is not None else "BossTimer")
+        base = self._display_name(cur["name"]) if cur is not None else "BossTimer"
+        self.root.title(f"{base} - {TITLE_SUFFIX}")
 
     def _commit(self):
         """状态变更后的统一收尾：持久化 + 刷新 UI + 更新标题。"""
@@ -213,6 +234,33 @@ class App:
         self.current_index = len(self.open_files) - 1
         self._commit()
         return loaded
+
+    def on_new_file(self, name: str):
+        """新建一个空白数据文件并打开为新页签。
+
+        返回 dict 表示成功，返回 str 表示错误信息。
+        """
+        if not _is_valid_name(name):
+            return "文件名不合法。"
+        path = _normalize_filename(name)
+        # 若文件已存在，则直接打开它（避免覆盖）
+        if os.path.exists(path):
+            return f"文件已存在：{name}"
+        # 若同名文件已在页签中打开，聚焦到它
+        for i, f in enumerate(self.open_files):
+            if os.path.abspath(f["path"]) == os.path.abspath(path):
+                self.current_index = i
+                self._commit()
+                return f["data"]
+
+        data = new_data()
+        err = self._save_current({"data": data, "path": path})
+        if err is not None:
+            return err
+        self.open_files.append({"name": name, "path": path, "data": data})
+        self.current_index = len(self.open_files) - 1
+        self._commit()
+        return data
 
     def on_delete_file(self, name: str):
         """删除指定数据文件；返回 None 表示成功，返回 str 表示错误信息。"""
@@ -306,10 +354,25 @@ class App:
 def main():
     _ensure_dirs()
     root = tk.Tk()
+
+    # 设置默认窗口尺寸并居中显示（宽度贴合 6 列频道格子，高度可滚动）
+    root.geometry("800x800")
+    _center_window(root, 800, 800)
+
     app = App(root)
     app.restore_last_session()
     root.protocol("WM_DELETE_WINDOW", app.on_close)
     root.mainloop()
+
+
+def _center_window(root: tk.Tk, width: int, height: int) -> None:
+    """将窗口居中显示。"""
+    root.update_idletasks()
+    screen_w = root.winfo_screenwidth()
+    screen_h = root.winfo_screenheight()
+    x = max(0, (screen_w - width) // 2)
+    y = max(0, (screen_h - height) // 2)
+    root.geometry(f"{width}x{height}+{x}+{y}")
 
 
 if __name__ == "__main__":
