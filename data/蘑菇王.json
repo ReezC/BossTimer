@@ -365,9 +365,9 @@
     {
       "id": 46,
       "name": "频道46",
-      "base_time": "2026-08-16T17:30:37.288635",
-      "source": "init",
-      "recorded": false,
+      "base_time": "2026-08-18T14:10:47.743078",
+      "source": "kill",
+      "recorded": true,
       "checked_time": ""
     },
     {
