@@ -38,7 +38,7 @@ LAST_FILES_PATH = os.path.join(STATE_DIR, "last_files.json")
 _INVALID_NAME_CHARS = set('\\/:*?"<>|')
 
 # 窗口标题版权后缀
-TITLE_SUFFIX = "made by 小曰哥 qq958679431 请勿商用"
+TITLE_SUFFIX = "boss刷新计时器"
 
 
 def _ensure_dirs() -> None:
