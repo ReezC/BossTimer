@@ -1,6 +1,6 @@
 {
   "refresh_lower_minutes": 35.0,
-  "refresh_upper_minutes": 62.0,
+  "refresh_upper_minutes": 65.0,
   "channels": [
     {
       "id": 1,
@@ -93,9 +93,9 @@
     {
       "id": 12,
       "name": "频道12",
-      "base_time": "2026-08-16T16:01:06.236988",
-      "source": "init",
-      "recorded": false,
+      "base_time": "2026-08-19T17:17:31",
+      "source": "kill",
+      "recorded": true,
       "checked_time": ""
     },
     {

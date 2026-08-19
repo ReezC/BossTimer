@@ -5,8 +5,8 @@
     {
       "id": 1,
       "name": "频道1",
-      "base_time": "2026-08-19T00:49:20.279022",
-      "source": "init",
+      "base_time": "2026-08-19T17:15:07",
+      "source": "kill",
       "recorded": false,
       "checked_time": ""
     },
@@ -69,9 +69,9 @@
     {
       "id": 9,
       "name": "频道9",
-      "base_time": "2026-08-17T23:52:40.506092",
+      "base_time": "2026-08-19T18:57:36.813047",
       "source": "init",
-      "recorded": false,
+      "recorded": true,
       "checked_time": ""
     },
     {
@@ -85,9 +85,9 @@
     {
       "id": 11,
       "name": "频道11",
-      "base_time": "2026-08-16T16:01:06.142055",
-      "source": "init",
-      "recorded": false,
+      "base_time": "2026-08-19T18:31:31",
+      "source": "kill",
+      "recorded": true,
       "checked_time": ""
     },
     {
@@ -101,9 +101,9 @@
     {
       "id": 13,
       "name": "频道13",
-      "base_time": "2026-08-16T16:01:06.331161",
+      "base_time": "2026-08-19T18:41:36.969931",
       "source": "init",
-      "recorded": false,
+      "recorded": true,
       "checked_time": ""
     },
     {
@@ -125,9 +125,9 @@
     {
       "id": 16,
       "name": "频道16",
-      "base_time": "2026-08-19T12:24:54.534963",
+      "base_time": "2026-08-19T15:01:55.253746",
       "source": "init",
-      "recorded": true,
+      "recorded": false,
       "checked_time": ""
     },
     {
@@ -245,10 +245,10 @@
     {
       "id": 31,
       "name": "频道31",
-      "base_time": "2026-08-17T17:35:03.830406",
+      "base_time": "2026-08-19T18:31:29.764802",
       "source": "init",
-      "recorded": false,
-      "checked_time": "2026-08-18T12:02:46.978126"
+      "recorded": true,
+      "checked_time": ""
     },
     {
       "id": 32,
@@ -280,7 +280,7 @@
       "base_time": "2026-08-18T14:49:22.310927",
       "source": "init",
       "recorded": false,
-      "checked_time": ""
+      "checked_time": "2026-08-19T18:44:37.354884"
     },
     {
       "id": 36,
@@ -389,10 +389,10 @@
     {
       "id": 49,
       "name": "频道49",
-      "base_time": "2026-08-16T17:30:38.335432",
+      "base_time": "2026-08-19T18:42:57.101443",
       "source": "init",
-      "recorded": false,
-      "checked_time": "2026-08-19T12:39:32.531947"
+      "recorded": true,
+      "checked_time": ""
     },
     {
       "id": 50,
@@ -429,8 +429,8 @@
     {
       "id": 54,
       "name": "频道54",
-      "base_time": "2026-08-19T01:31:05.179355",
-      "source": "init",
+      "base_time": "2026-08-19T13:00:40",
+      "source": "kill",
       "recorded": false,
       "checked_time": ""
     },
