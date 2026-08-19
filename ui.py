@@ -33,19 +33,24 @@ STATUS_DISPLAY = {
 }
 
 def _center_over_parent(toplevel: tk.Toplevel, parent) -> None:
-    """将弹窗居中于父窗口（父窗口可跨显示器，按屏幕绝对坐标定位）。
+    """将弹窗居中于其最顶层窗口（主窗口），可跨显示器定位。
 
-    注意：跨显示器时父窗口坐标可能为负（副显示器在主显示器左侧/上方），
+    使用 parent.winfo_toplevel() 作为定位参考，确保即使 parent 是
+    另一个弹窗（如击杀时间弹窗的父是编辑弹窗），也统一居中于主窗口。
+
+    注意：跨显示器时主窗口坐标可能为负（副显示器在主显示器左侧/上方），
     因此不能对坐标做 max(0, ...) 截断，否则弹窗会被拉回主显示器。
     """
+    root = parent.winfo_toplevel()
+
     def _apply():
-        parent.update_idletasks()
+        root.update_idletasks()
         w = toplevel.winfo_width()
         h = toplevel.winfo_height()
-        px = parent.winfo_rootx()
-        py = parent.winfo_rooty()
-        pw = parent.winfo_width()
-        ph = parent.winfo_height()
+        px = root.winfo_rootx()
+        py = root.winfo_rooty()
+        pw = root.winfo_width()
+        ph = root.winfo_height()
         x = px + (pw - w) // 2
         y = py + (ph - h) // 2
         toplevel.geometry(f"+{x}+{y}")
@@ -564,7 +569,7 @@ class MainWindow:
             cell.tag_configure("small", font=("Arial", CELL_SMALL_FONT_SIZE))
             cell.bind(
                 "<Button-1>",
-                lambda e, cid=ch["id"]: self._open_edit_dialog(cid, e.x_root, e.y_root),
+                lambda e, cid=ch["id"]: self._open_edit_dialog(cid),
             )
             row = idx // GRID_COLUMNS
             col = idx % GRID_COLUMNS
@@ -680,13 +685,13 @@ class MainWindow:
 
     # ---------- 编辑弹窗 ----------
 
-    def _open_edit_dialog(self, channel_id: int, x: int = 0, y: int = 0):
+    def _open_edit_dialog(self, channel_id: int):
         channel = next(
             (c for c in self._get_channels() if c["id"] == channel_id), None
         )
         if channel is None:
             return
-        ChannelEditDialog(self.root, channel, self._on_edit_apply, x, y)
+        ChannelEditDialog(self.root, channel, self._on_edit_apply)
 
     def _on_edit_apply(self, channel: dict):
         """编辑弹窗提交后的回调，更新对应频道并刷新。"""
@@ -701,7 +706,7 @@ class MainWindow:
 class ChannelEditDialog(tk.Toplevel):
     """频道编辑弹窗：展示频道信息，提供初始化与自定义击杀时间按钮。"""
 
-    def __init__(self, parent, channel: dict, on_apply, x: int = 0, y: int = 0):
+    def __init__(self, parent, channel: dict, on_apply):
         super().__init__(parent)
         self.channel = channel
         self.on_apply = on_apply
@@ -710,13 +715,6 @@ class ChannelEditDialog(tk.Toplevel):
         self.resizable(False, False)
         self.transient(parent)
         self.grab_set()
-
-        # 定位到鼠标点击位置（x, y 为屏幕坐标），使弹窗中心对齐鼠标
-        if x or y:
-            self.update_idletasks()
-            w = self.winfo_width()
-            h = self.winfo_height()
-            self.geometry(f"+{x - w // 2}+{y - h // 2}")
 
         tk.Label(
             self,
@@ -768,6 +766,8 @@ class ChannelEditDialog(tk.Toplevel):
             width=24,
             command=self.destroy,
         ).pack(padx=20, pady=(5, 20))
+
+        _center_over_parent(self, parent)
 
     def _toggle_recorded(self):
         """勾选/取消勾选时即时同步 recorded 字段。"""
@@ -857,6 +857,8 @@ class KillTimeDialog(tk.Toplevel):
             fg="#FFFFFF",
             activebackground="#757575",
         ).pack(side="left", padx=5)
+
+        _center_over_parent(self, parent)
 
     def _default_text(self) -> str:
         """预填文本：优先使用该频道已记录的基准时间，否则用当前时间。"""
