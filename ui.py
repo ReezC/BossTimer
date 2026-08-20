@@ -1053,7 +1053,7 @@ class FileSelectDialog(tk.Toplevel):
 class HelpDialog(tk.Toplevel):
     """帮助弹窗：展示说明文字（可多行换行），含"我知道了"按钮。"""
 
-    HELP_TEXT = "摸索摸索就会啦！\n如果有建议请告诉我。\n请多帮助等级低的小朋友吧！"
+    HELP_TEXT = "摸索摸索就会啦！\n如果有建议请告诉我。\n请多帮助等级低的小朋友吧！\nMade by 小曰哥 qq 958679431"
 
     def __init__(self, parent):
         super().__init__(parent)
