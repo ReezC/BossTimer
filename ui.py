@@ -19,6 +19,7 @@ from models import (
     compute_countdown_text,
     compute_earliest_time,
     compute_status,
+    compute_timeout_time,
     format_base_time,
     get_server_time,
     is_expired_beyond,
@@ -59,6 +60,28 @@ def _center_over_parent(toplevel: tk.Toplevel, parent) -> None:
     toplevel.update_idletasks()
     _apply()
     toplevel.after(50, _apply)
+
+
+def _bind_escape(toplevel: tk.Toplevel) -> None:
+    """为弹窗绑定 ESC 键关闭，并确保弹窗获得键盘焦点。
+
+    同时给所有子控件绑定 ESC，确保焦点落在输入框/按钮时也能触发关闭。
+    """
+    toplevel.bind("<Escape>", lambda e: toplevel.destroy())
+
+    def _bind_recursive(widget):
+        for child in widget.winfo_children():
+            child.bind("<Escape>", lambda e: toplevel.destroy())
+            _bind_recursive(child)
+
+    _bind_recursive(toplevel)
+
+    # 延迟聚焦，确保窗口映射完成后再强制焦点
+    def _focus():
+        toplevel.focus_force()
+        toplevel.lift()
+
+    toplevel.after(50, _focus)
 
 
 # 每行固定显示的格子列数
@@ -621,10 +644,17 @@ class MainWindow:
             small_head = f"上次：{last_kill}" if last_kill else ""
             extra_tail = ""
             if status == Status.PENDING:
-                # 待刷新：额外小字行，显示最早刷新时间 = base + a
-                earliest = compute_earliest_time(ch.get("base_time", ""), lower)
-                if earliest:
-                    extra_tail = f"({earliest})"
+                # 待刷新：额外小字行，显示刷新窗口 "下次:{进入刷新时间}~{超时时间}"
+                window_range = compute_earliest_time(
+                    ch.get("base_time", ""), lower, upper
+                )
+                if window_range:
+                    extra_tail = f"下次:{window_range}"
+            elif status == Status.WINDOW:
+                # 刷新期：额外小字行，显示超时时间
+                timeout = compute_timeout_time(ch.get("base_time", ""), upper)
+                if timeout:
+                    extra_tail = f"超时于:{timeout}"
 
             self._set_cell_text(
                 cell,
@@ -768,6 +798,7 @@ class ChannelEditDialog(tk.Toplevel):
         ).pack(padx=20, pady=(5, 20))
 
         _center_over_parent(self, parent)
+        _bind_escape(self)
 
     def _toggle_recorded(self):
         """勾选/取消勾选时即时同步 recorded 字段。"""
@@ -859,6 +890,7 @@ class KillTimeDialog(tk.Toplevel):
         ).pack(side="left", padx=5)
 
         _center_over_parent(self, parent)
+        _bind_escape(self)
 
     def _default_text(self) -> str:
         """预填文本：优先使用该频道已记录的基准时间，否则用当前时间。"""
@@ -971,6 +1003,7 @@ class FileSelectDialog(tk.Toplevel):
         )
 
         _center_over_parent(self, parent)
+        _bind_escape(self)
 
     def _selected_name(self):
         if self.listbox is None:
@@ -1049,6 +1082,7 @@ class HelpDialog(tk.Toplevel):
         ).pack(padx=20, pady=(0, 20))
 
         _center_over_parent(self, parent)
+        _bind_escape(self)
 
 
 

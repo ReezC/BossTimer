@@ -188,22 +188,37 @@ def compute_checked_text(
 
 
 def format_base_time(base_time: str) -> str:
-    """将基准时间格式化为 "HH:MM:SS" 供格子显示；非法时返回空串。"""
+    """将基准时间格式化为 "HH:MM" 供格子显示；非法时返回空串。"""
     try:
         base = datetime.fromisoformat(base_time)
     except (ValueError, TypeError):
         return ""
-    return base.strftime("%H:%M:%S")
+    return base.strftime("%H:%M")
 
 
-def compute_earliest_time(base_time: str, a_minutes: float) -> str:
-    """计算"最早刷新时间"（= base_time + a 分钟），返回 "HH:MM:SS"；非法时返回空串。"""
+def compute_earliest_time(base_time: str, a_minutes: float, b_minutes: float) -> str:
+    """计算刷新窗口时间范围，返回 "{进入刷新时间}~{超时时间}"（HH:MM~HH:MM）。
+
+    进入刷新时间 = base_time + a 分钟，超时时间 = base_time + b 分钟。
+    非法时返回空串。
+    """
     try:
         base = datetime.fromisoformat(base_time)
     except (ValueError, TypeError):
         return ""
-    earliest = base + timedelta(minutes=a_minutes)
-    return earliest.strftime("%H:%M:%S")
+    enter = base + timedelta(minutes=a_minutes)
+    timeout = base + timedelta(minutes=b_minutes)
+    return f"{enter.strftime('%H:%M')}~{timeout.strftime('%H:%M')}"
+
+
+def compute_timeout_time(base_time: str, b_minutes: float) -> str:
+    """计算"超时时间"（= base_time + b 分钟），返回 "HH:MM"；非法时返回空串。"""
+    try:
+        base = datetime.fromisoformat(base_time)
+    except (ValueError, TypeError):
+        return ""
+    timeout = base + timedelta(minutes=b_minutes)
+    return timeout.strftime("%H:%M")
 
 
 def get_server_time() -> datetime:

@@ -21,9 +21,9 @@
     {
       "id": 3,
       "name": "频道3",
-      "base_time": "2026-08-16T16:01:04.844115",
-      "source": "init",
-      "recorded": false,
+      "base_time": "2026-08-20T08:41:28",
+      "source": "kill",
+      "recorded": true,
       "checked_time": ""
     },
     {
