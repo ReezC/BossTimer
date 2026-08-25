@@ -189,7 +189,7 @@
     {
       "id": 24,
       "name": "频道24",
-      "base_time": "2026-08-25T08:20:34",
+      "base_time": "2026-08-25T12:26:34",
       "source": "kill",
       "recorded": true,
       "checked_time": ""
@@ -197,9 +197,9 @@
     {
       "id": 25,
       "name": "频道25",
-      "base_time": "2026-08-16T16:01:07.451715",
-      "source": "init",
-      "recorded": false,
+      "base_time": "2026-08-25T12:42:08",
+      "source": "kill",
+      "recorded": true,
       "checked_time": ""
     },
     {
