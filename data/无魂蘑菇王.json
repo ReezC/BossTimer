@@ -165,9 +165,9 @@
     {
       "id": 21,
       "name": "频道21",
-      "base_time": "2026-08-25T18:55:35",
+      "base_time": "2026-08-25T19:46:30",
       "source": "kill",
-      "recorded": true,
+      "recorded": false,
       "checked_time": ""
     },
     {
@@ -181,7 +181,7 @@
     {
       "id": 23,
       "name": "频道23",
-      "base_time": "2026-08-25T18:30:34.074914",
+      "base_time": "2026-08-25T21:15:01.764603",
       "source": "init",
       "recorded": true,
       "checked_time": ""
@@ -237,9 +237,9 @@
     {
       "id": 30,
       "name": "频道30",
-      "base_time": "2026-08-25T18:50:40",
-      "source": "kill",
-      "recorded": true,
+      "base_time": "2026-08-25T19:36:35.018188",
+      "source": "init",
+      "recorded": false,
       "checked_time": ""
     },
     {
@@ -253,9 +253,9 @@
     {
       "id": 32,
       "name": "频道32",
-      "base_time": "2026-08-25T18:41:20",
+      "base_time": "2026-08-25T19:26:14",
       "source": "kill",
-      "recorded": true,
+      "recorded": false,
       "checked_time": ""
     },
     {
@@ -279,7 +279,7 @@
       "name": "频道35",
       "base_time": "2026-08-25T19:14:45.038005",
       "source": "init",
-      "recorded": true,
+      "recorded": false,
       "checked_time": ""
     },
     {
@@ -293,9 +293,9 @@
     {
       "id": 37,
       "name": "频道37",
-      "base_time": "2026-08-25T18:51:19",
-      "source": "kill",
-      "recorded": true,
+      "base_time": "2026-08-25T19:40:50.163632",
+      "source": "init",
+      "recorded": false,
       "checked_time": ""
     },
     {
@@ -325,9 +325,9 @@
     {
       "id": 41,
       "name": "频道41",
-      "base_time": "2026-08-25T18:35:33.830651",
-      "source": "init",
-      "recorded": true,
+      "base_time": "2026-08-25T19:20:33",
+      "source": "kill",
+      "recorded": false,
       "checked_time": ""
     },
     {
@@ -405,9 +405,9 @@
     {
       "id": 51,
       "name": "频道51",
-      "base_time": "2026-08-25T18:57:20",
+      "base_time": "2026-08-25T19:44:50",
       "source": "kill",
-      "recorded": true,
+      "recorded": false,
       "checked_time": ""
     },
     {

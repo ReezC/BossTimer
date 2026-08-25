@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="utf-8"?>
+<SoundBanksInfo Platform="Windows" BasePlatform="Windows" SchemaVersion="12" SoundbankVersion="140">
+	<RootPaths>
+		<ProjectRoot>C:\MapleStoryPlan\maplehelper-client\src\MapleStoryMarketPrice_WwiseProject\</ProjectRoot>
+		<SourceFilesRoot>C:\MapleStoryPlan\maplehelper-client\src\MapleStoryMarketPrice_WwiseProject\.cache\Windows\</SourceFilesRoot>
+		<SoundBanksRoot>C:\MapleStoryPlan\maplehelper-client\src\MapleStoryMarketPrice_WwiseProject\GeneratedSoundBanks\Windows\</SoundBanksRoot>
+		<ExternalSourcesInputFile></ExternalSourcesInputFile>
+		<ExternalSourcesOutputRoot>C:\MapleStoryPlan\maplehelper-client\src\MapleStoryMarketPrice_WwiseProject\GeneratedSoundBanks\Windows</ExternalSourcesOutputRoot>
+	</RootPaths>
+	<DialogueEvents/>
+	<StreamedFiles/>
+	<MediaFilesNotInAnyBank/>
+	<SoundBanks>
+		<SoundBank Id="1355168291" Language="SFX" Hash="1908949537">
+			<ObjectPath>Init</ObjectPath>
+			<ShortName>Init</ShortName>
+			<Path>Init.bnk</Path>
+			<GameParameters>
+				<GameParameter Id="3747206233" Name="Volume_Main" ObjectPath="\Game Parameters\Default Work Unit\Volume_Main"/>
+			</GameParameters>
+			<StateGroups>
+				<StateGroup Id="1532643310" Name="Mute_Main" ObjectPath="\States\Default Work Unit\Mute_Main">
+					<States>
+						<State Id="748895195" Name="None" ObjectPath="\States\Default Work Unit\Mute_Main\None"/>
+						<State Id="979470758" Name="Yes" ObjectPath="\States\Default Work Unit\Mute_Main\Yes"/>
+						<State Id="1668749452" Name="No" ObjectPath="\States\Default Work Unit\Mute_Main\No"/>
+					</States>
+				</StateGroup>
+			</StateGroups>
+		</SoundBank>
+		<SoundBank Id="3161908922" Language="SFX" Hash="1234256946">
+			<ObjectPath>\SoundBanks\Default Work Unit\Main</ObjectPath>
+			<ShortName>Main</ShortName>
+			<Path>Main.bnk</Path>
+			<IncludedEvents>
+				<Event Id="2573674595" Name="BoxResult" ObjectPath="\Events\Default Work Unit\BoxResult" DurationType="OneShot" DurationMin="2.429388" DurationMax="2.429388">
+					<IncludedMemoryFiles>
+						<File Id="256199999" Language="SFX">
+							<ShortName>boxResult.wav</ShortName>
+							<Path>SFX\boxResult_10C4C929.wem</Path>
+						</File>
+					</IncludedMemoryFiles>
+				</Event>
+				<Event Id="2748566804" Name="BtnMouseClick" ObjectPath="\Events\Default Work Unit\BtnMouseClick" DurationType="OneShot" DurationMin="0.261224" DurationMax="0.261224">
+					<IncludedMemoryFiles>
+						<File Id="963989336" Language="SFX">
+							<ShortName>BtMouseClick.wav</ShortName>
+							<Path>SFX\BtMouseClick_10C4C929.wem</Path>
+						</File>
+					</IncludedMemoryFiles>
+				</Event>
+				<Event Id="2725359730" Name="BtnMouseOver" ObjectPath="\Events\Default Work Unit\BtnMouseOver" DurationType="OneShot" DurationMin="0.261224" DurationMax="0.261224">
+					<IncludedMemoryFiles>
+						<File Id="917854723" Language="SFX">
+							<ShortName>BtMouseOver.wav</ShortName>
+							<Path>SFX\BtMouseOver_10C4C929.wem</Path>
+						</File>
+					</IncludedMemoryFiles>
+				</Event>
+				<Event Id="1777102910" Name="BuyShopItem" ObjectPath="\Events\Default Work Unit\BuyShopItem" DurationType="OneShot" DurationMin="1.175510" DurationMax="1.175510">
+					<IncludedMemoryFiles>
+						<File Id="773579434" Language="SFX">
+							<ShortName>BuyShopItem.wav</ShortName>
+							<Path>SFX\BuyShopItem_10C4C929.wem</Path>
+						</File>
+					</IncludedMemoryFiles>
+				</Event>
+				<Event Id="271096388" Name="DlgNotice" ObjectPath="\Events\Default Work Unit\DlgNotice" DurationType="OneShot" DurationMin="0.966531" DurationMax="0.966531">
+					<IncludedMemoryFiles>
+						<File Id="781419105" Language="SFX">
+							<ShortName>DlgNotice.wav</ShortName>
+							<Path>SFX\DlgNotice_10C4C929.wem</Path>
+						</File>
+					</IncludedMemoryFiles>
+				</Event>
+				<Event Id="2119252428" Name="Enchant" ObjectPath="\Events\Default Work Unit\Enchant" DurationType="OneShot" DurationMin="3.134694" DurationMax="3.134694">
+					<IncludedMemoryFiles>
+						<File Id="82503998" Language="SFX">
+							<ShortName>Enchant.wav</ShortName>
+							<Path>SFX\Enchant_10C4C929.wem</Path>
+						</File>
+					</IncludedMemoryFiles>
+				</Event>
+				<Event Id="3544254253" Name="EnchantDestroyed" ObjectPath="\Events\Default Work Unit\EnchantDestroyed" DurationType="OneShot" DurationMin="2.232000" DurationMax="2.232000">
+					<IncludedMemoryFiles>
+						<File Id="328854085" Language="SFX">
+							<ShortName>EnchantDestroyed.wav</ShortName>
+							<Path>SFX\EnchantDestroyed_10C4C929.wem</Path>
+						</File>
+					</IncludedMemoryFiles>
+				</Event>
+				<Event Id="3133948648" Name="EnchantFail" ObjectPath="\Events\Default Work Unit\EnchantFail" DurationType="OneShot" DurationMin="2.220408" DurationMax="2.220408">
+					<IncludedMemoryFiles>
+						<File Id="885246284" Language="SFX">
+							<ShortName>EnchantFail.wav</ShortName>
+							<Path>SFX\EnchantFail_10C4C929.wem</Path>
+						</File>
+					</IncludedMemoryFiles>
+				</Event>
+				<Event Id="1340731732" Name="EnchantReplace" ObjectPath="\Events\Default Work Unit\EnchantReplace" DurationType="OneShot" DurationMin="1.933061" DurationMax="1.933061">
+					<IncludedMemoryFiles>
+						<File Id="711915262" Language="SFX">
+							<ShortName>EnchantReplace.wav</ShortName>
+							<Path>SFX\EnchantReplace_10C4C929.wem</Path>
+						</File>
+					</IncludedMemoryFiles>
+				</Event>
+				<Event Id="3886522645" Name="EnchantSuccess" ObjectPath="\Events\Default Work Unit\EnchantSuccess" DurationType="OneShot" DurationMin="1.933061" DurationMax="1.933061">
+					<IncludedMemoryFiles>
+						<File Id="118302103" Language="SFX">
+							<ShortName>EnchantSuccess.wav</ShortName>
+							<Path>SFX\EnchantSuccess_10C4C929.wem</Path>
+						</File>
+					</IncludedMemoryFiles>
+				</Event>
+				<Event Id="3031509150" Name="Invite" ObjectPath="\Events\Default Work Unit\Invite" DurationType="OneShot" DurationMin="1.018775" DurationMax="1.018775">
+					<IncludedMemoryFiles>
+						<File Id="680960986" Language="SFX">
+							<ShortName>Invite.wav</ShortName>
+							<Path>SFX\Invite_10C4C929.wem</Path>
+						</File>
+					</IncludedMemoryFiles>
+				</Event>
+				<Event Id="556785088" Name="Logo" ObjectPath="\Events\Default Work Unit\Logo" DurationType="OneShot" DurationMin="1.933061" DurationMax="1.933061">
+					<IncludedMemoryFiles>
+						<File Id="1016373742" Language="SFX">
+							<ShortName>NxLogo.wav</ShortName>
+							<Path>SFX\NxLogo_10C4C929.wem</Path>
+						</File>
+					</IncludedMemoryFiles>
+				</Event>
+				<Event Id="1914916084" Name="MenuDown" ObjectPath="\Events\Default Work Unit\MenuDown" DurationType="OneShot" DurationMin="0.182857" DurationMax="0.182857">
+					<IncludedMemoryFiles>
+						<File Id="1005610040" Language="SFX">
+							<ShortName>MenuDown.wav</ShortName>
+							<Path>SFX\MenuDown_10C4C929.wem</Path>
+						</File>
+					</IncludedMemoryFiles>
+				</Event>
+				<Event Id="172993487" Name="MenuUp" ObjectPath="\Events\Default Work Unit\MenuUp" DurationType="OneShot" DurationMin="0.391837" DurationMax="0.391837">
+					<IncludedMemoryFiles>
+						<File Id="238834923" Language="SFX">
+							<ShortName>MenuUp.wav</ShortName>
+							<Path>SFX\MenuUp_10C4C929.wem</Path>
+						</File>
+					</IncludedMemoryFiles>
+				</Event>
+				<Event Id="1832278084" Name="RollDown" ObjectPath="\Events\Default Work Unit\RollDown" DurationType="OneShot" DurationMin="1.018775" DurationMax="1.018775">
+					<IncludedMemoryFiles>
+						<File Id="531784922" Language="SFX">
+							<ShortName>RollDown.wav</ShortName>
+							<Path>SFX\RollDown_10C4C929.wem</Path>
+						</File>
+					</IncludedMemoryFiles>
+				</Event>
+				<Event Id="27771263" Name="RollUp" ObjectPath="\Events\Default Work Unit\RollUp" DurationType="OneShot" DurationMin="0.705306" DurationMax="0.705306">
+					<IncludedMemoryFiles>
+						<File Id="349503613" Language="SFX">
+							<ShortName>RollUp.wav</ShortName>
+							<Path>SFX\RollUp_10C4C929.wem</Path>
+						</File>
+					</IncludedMemoryFiles>
+				</Event>
+				<Event Id="2546189601" Name="ScrollUp" ObjectPath="\Events\Default Work Unit\ScrollUp" DurationType="OneShot" DurationMin="1.149388" DurationMax="1.149388">
+					<IncludedMemoryFiles>
+						<File Id="403398756" Language="SFX">
+							<ShortName>ScrollUp.wav</ShortName>
+							<Path>SFX\ScrollUp_10C4C929.wem</Path>
+						</File>
+					</IncludedMemoryFiles>
+				</Event>
+				<Event Id="845985362" Name="Tab" ObjectPath="\Events\Default Work Unit\Tab" DurationType="OneShot" DurationMin="0.156735" DurationMax="0.156735">
+					<IncludedMemoryFiles>
+						<File Id="98346034" Language="SFX">
+							<ShortName>Tab.wav</ShortName>
+							<Path>SFX\Tab_10C4C929.wem</Path>
+						</File>
+					</IncludedMemoryFiles>
+				</Event>
+			</IncludedEvents>
+		</SoundBank>
+	</SoundBanks>
+</SoundBanksInfo>

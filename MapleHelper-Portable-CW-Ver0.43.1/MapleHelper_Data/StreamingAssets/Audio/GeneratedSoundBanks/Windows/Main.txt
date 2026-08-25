@@ -1,0 +1,40 @@
+Event	ID	Name			Wwise Object Path	Notes
+	27771263	RollUp			\Default Work Unit\RollUp	
+	172993487	MenuUp			\Default Work Unit\MenuUp	
+	271096388	DlgNotice			\Default Work Unit\DlgNotice	
+	556785088	Logo			\Default Work Unit\Logo	
+	845985362	Tab			\Default Work Unit\Tab	
+	1340731732	EnchantReplace			\Default Work Unit\EnchantReplace	
+	1777102910	BuyShopItem			\Default Work Unit\BuyShopItem	
+	1832278084	RollDown			\Default Work Unit\RollDown	
+	1914916084	MenuDown			\Default Work Unit\MenuDown	
+	2119252428	Enchant			\Default Work Unit\Enchant	
+	2546189601	ScrollUp			\Default Work Unit\ScrollUp	
+	2573674595	BoxResult			\Default Work Unit\BoxResult	
+	2725359730	BtnMouseOver			\Default Work Unit\BtnMouseOver	
+	2748566804	BtnMouseClick			\Default Work Unit\BtnMouseClick	
+	3031509150	Invite			\Default Work Unit\Invite	
+	3133948648	EnchantFail			\Default Work Unit\EnchantFail	
+	3544254253	EnchantDestroyed			\Default Work Unit\EnchantDestroyed	
+	3886522645	EnchantSuccess			\Default Work Unit\EnchantSuccess	
+
+In Memory Audio	ID	Name	Audio source file		Wwise Object Path	Notes	Data Size
+	82503998	Enchant	C:\MapleStoryPlan\maplehelper-client\src\MapleStoryMarketPrice_WwiseProject\.cache\Windows\SFX\Enchant_10C4C929.wem		\Actor-Mixer Hierarchy\Default Work Unit\UI\Enchant		138304
+	98346034	Tab	C:\MapleStoryPlan\maplehelper-client\src\MapleStoryMarketPrice_WwiseProject\.cache\Windows\SFX\Tab_10C4C929.wem		\Actor-Mixer Hierarchy\Default Work Unit\UI\Tab		6976
+	118302103	EnchantSuccess	C:\MapleStoryPlan\maplehelper-client\src\MapleStoryMarketPrice_WwiseProject\.cache\Windows\SFX\EnchantSuccess_10C4C929.wem		\Actor-Mixer Hierarchy\Default Work Unit\UI\EnchantSuccess		85312
+	238834923	MenuUp	C:\MapleStoryPlan\maplehelper-client\src\MapleStoryMarketPrice_WwiseProject\.cache\Windows\SFX\MenuUp_10C4C929.wem		\Actor-Mixer Hierarchy\Default Work Unit\UI\MenuUp		17344
+	256199999	BoxResult	C:\MapleStoryPlan\maplehelper-client\src\MapleStoryMarketPrice_WwiseProject\.cache\Windows\SFX\boxResult_10C4C929.wem		\Actor-Mixer Hierarchy\Default Work Unit\UI\BoxResult		214336
+	328854085	EnchantDestroyed	C:\MapleStoryPlan\maplehelper-client\src\MapleStoryMarketPrice_WwiseProject\.cache\Windows\SFX\EnchantDestroyed_10C4C929.wem		\Actor-Mixer Hierarchy\Default Work Unit\UI\EnchantDestroyed		214336
+	349503613	RollUp	C:\MapleStoryPlan\maplehelper-client\src\MapleStoryMarketPrice_WwiseProject\.cache\Windows\SFX\RollUp_10C4C929.wem		\Actor-Mixer Hierarchy\Default Work Unit\UI\RollUp		31168
+	403398756	ScrollUp	C:\MapleStoryPlan\maplehelper-client\src\MapleStoryMarketPrice_WwiseProject\.cache\Windows\SFX\ScrollUp_10C4C929.wem		\Actor-Mixer Hierarchy\Default Work Unit\UI\ScrollUp		50752
+	531784922	RollDown	C:\MapleStoryPlan\maplehelper-client\src\MapleStoryMarketPrice_WwiseProject\.cache\Windows\SFX\RollDown_10C4C929.wem		\Actor-Mixer Hierarchy\Default Work Unit\UI\RollDown		44992
+	680960986	Invite	C:\MapleStoryPlan\maplehelper-client\src\MapleStoryMarketPrice_WwiseProject\.cache\Windows\SFX\Invite_10C4C929.wem		\Actor-Mixer Hierarchy\Default Work Unit\UI\Invite		44992
+	711915262	EnchantReplace	C:\MapleStoryPlan\maplehelper-client\src\MapleStoryMarketPrice_WwiseProject\.cache\Windows\SFX\EnchantReplace_10C4C929.wem		\Actor-Mixer Hierarchy\Default Work Unit\UI\EnchantReplace		85312
+	773579434	BuyShopItem	C:\MapleStoryPlan\maplehelper-client\src\MapleStoryMarketPrice_WwiseProject\.cache\Windows\SFX\BuyShopItem_10C4C929.wem		\Actor-Mixer Hierarchy\Default Work Unit\UI\BuyShopItem		51904
+	781419105	DlgNotice	C:\MapleStoryPlan\maplehelper-client\src\MapleStoryMarketPrice_WwiseProject\.cache\Windows\SFX\DlgNotice_10C4C929.wem		\Actor-Mixer Hierarchy\Default Work Unit\UI\DlgNotice		42688
+	885246284	EnchantFail	C:\MapleStoryPlan\maplehelper-client\src\MapleStoryMarketPrice_WwiseProject\.cache\Windows\SFX\EnchantFail_10C4C929.wem		\Actor-Mixer Hierarchy\Default Work Unit\UI\EnchantFail		97984
+	917854723	BtMouseOver	C:\MapleStoryPlan\maplehelper-client\src\MapleStoryMarketPrice_WwiseProject\.cache\Windows\SFX\BtMouseOver_10C4C929.wem		\Actor-Mixer Hierarchy\Default Work Unit\UI\BtMouseOver		11584
+	963989336	BtMouseClick	C:\MapleStoryPlan\maplehelper-client\src\MapleStoryMarketPrice_WwiseProject\.cache\Windows\SFX\BtMouseClick_10C4C929.wem		\Actor-Mixer Hierarchy\Default Work Unit\UI\BtMouseClick		11584
+	1005610040	MenuDown	C:\MapleStoryPlan\maplehelper-client\src\MapleStoryMarketPrice_WwiseProject\.cache\Windows\SFX\MenuDown_10C4C929.wem		\Actor-Mixer Hierarchy\Default Work Unit\UI\MenuDown		8128
+	1016373742	NxLogo	C:\MapleStoryPlan\maplehelper-client\src\MapleStoryMarketPrice_WwiseProject\.cache\Windows\SFX\NxLogo_10C4C929.wem		\Actor-Mixer Hierarchy\Default Work Unit\UI\NxLogo		341056
+
