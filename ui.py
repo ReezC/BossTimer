@@ -33,6 +33,9 @@ STATUS_DISPLAY = {
     Status.EXPIRED: ("已刷新", "#F44336"),
 }
 
+# 注释角标颜色（浅蓝，区别于状态色与文字色）
+NOTE_BADGE_COLOR = "#29B6F6"
+
 def _center_over_parent(toplevel: tk.Toplevel, parent) -> None:
     """将弹窗居中于其最顶层窗口（主窗口），可跨显示器定位。
 
@@ -131,10 +134,15 @@ class MainWindow:
 
         # 频道格子控件：id -> Text
         self.channel_buttons: dict[int, tk.Text] = {}
+        # 注释角标控件：id -> Canvas（位于格子右上角的红色三角）
+        self.note_badges: dict[int, tk.Canvas] = {}
 
         # 页签栏相关控件
         self.tab_frame = None
         self.tab_buttons = {}  # index -> (标签 Frame, 文本 Label, 关闭 Label)
+
+        # 注释 tooltip 相关
+        self._note_tooltip = None  # 当前显示的注释提示框（Toplevel）
 
         self._build_filebar()
         self._build_clock()
@@ -570,6 +578,7 @@ class MainWindow:
         for widget in self.grid_frame.winfo_children():
             widget.destroy()
         self.channel_buttons.clear()
+        self.note_badges.clear()
 
         if self.data is None:
             return
@@ -583,7 +592,8 @@ class MainWindow:
                 font=("Arial", CELL_FONT_SIZE, "bold"),
                 width=14,
                 height=4,
-                relief="raised",
+                relief="solid",
+                bd=1,
                 cursor="hand2",
                 highlightthickness=0,
                 wrap="none",
@@ -594,10 +604,43 @@ class MainWindow:
                 "<Button-1>",
                 lambda e, cid=ch["id"]: self._open_edit_dialog(cid),
             )
+            cell.bind(
+                "<Button-3>",
+                lambda e, cid=ch["id"]: self._open_note_dialog(cid),
+            )
+            cell.bind(
+                "<Enter>",
+                lambda e, cid=ch["id"]: self._show_note_tooltip(cid, e),
+            )
+            cell.bind(
+                "<Leave>",
+                lambda e: self._hide_note_tooltip(),
+            )
             row = idx // GRID_COLUMNS
             col = idx % GRID_COLUMNS
             cell.grid(row=row, column=col, padx=5, pady=5)
             self.channel_buttons[ch["id"]] = cell
+
+            # 注释角标：覆盖右上顶点的红色直角三角形（类似 Excel 注释角标），初始隐藏
+            badge_size = 9
+            badge = tk.Canvas(
+                cell,
+                width=badge_size,
+                height=badge_size,
+                bg=cell.cget("bg"),
+                highlightthickness=0,
+                bd=0,
+            )
+            # 直角三角形：直角在右上顶点（右上、左上、右下三点围成）
+            badge.create_polygon(
+                badge_size, 0,
+                0, 0,
+                badge_size, badge_size,
+                fill=NOTE_BADGE_COLOR,
+                outline="",
+            )
+            badge.place(relx=1.0, rely=0.0, anchor="ne", bordermode="outside")
+            self.note_badges[ch["id"]] = badge
 
         # 创建后立即更新一次显示
         self._update_channel_display()
@@ -618,6 +661,14 @@ class MainWindow:
             if cell is None:
                 continue
 
+            # 更新注释角标显隐
+            badge = self.note_badges.get(ch["id"])
+            if badge is not None:
+                if ch.get("note", ""):
+                    badge.place()
+                else:
+                    badge.place_forget()
+
             recorded = bool(ch.get("recorded", False))
 
             # 已记录但超时 2 倍 b 以上：自动降级为未记录（灰色）
@@ -631,7 +682,14 @@ class MainWindow:
                     ch.get("checked_time", ""), now, lower
                 )
                 head = f"{ch['name']}\n{label_text}"
-                self._set_cell_text(cell, head, checked_text, color, highlight_tail=True)
+                self._set_cell_text(
+                    cell,
+                    head,
+                    checked_text,
+                    color,
+                    highlight_tail=True,
+                    channel_id=ch["id"],
+                )
                 continue
 
             status = compute_status(ch["base_time"], now, lower, upper)
@@ -664,6 +722,7 @@ class MainWindow:
                 highlight_tail=False,
                 small_tail=extra_tail,
                 small_head=small_head,
+                channel_id=ch["id"],
             )
 
     def _set_cell_text(
@@ -675,6 +734,7 @@ class MainWindow:
         highlight_tail: bool = False,
         small_tail: str = "",
         small_head: str = "",
+        channel_id: int | None = None,
     ):
         """设置格子内容并居中。
 
@@ -685,7 +745,14 @@ class MainWindow:
         cell.config(state="normal", bg=bg)
         cell.delete("1.0", "end")
 
+        # 同步注释角标背景色（角标是 cell 的子控件，不自动跟随 cell 背景）
+        if channel_id is not None:
+            badge = self.note_badges.get(channel_id)
+            if badge is not None:
+                badge.config(bg=bg)
+
         cell.insert("1.0", head)
+
         if small_head:
             cell.insert("end", "\n" + small_head, "small")
 
@@ -731,6 +798,66 @@ class MainWindow:
                 break
         self._save()
         self._refresh_channels()
+
+    # ---------- 注释功能 ----------
+
+    def _open_note_dialog(self, channel_id: int):
+        channel = next(
+            (c for c in self._get_channels() if c["id"] == channel_id), None
+        )
+        if channel is None:
+            return
+        self._hide_note_tooltip()
+        NoteEditDialog(self.root, channel, self._on_note_apply)
+
+    def _on_note_apply(self, channel: dict):
+        """注释弹窗保存后的回调，更新对应频道并刷新。"""
+        for i, ch in enumerate(self._get_channels()):
+            if ch["id"] == channel["id"]:
+                self.data["channels"][i] = channel
+                break
+        self._save()
+        self._refresh_channels()
+
+    def _show_note_tooltip(self, channel_id: int, event):
+        """鼠标悬停时，若频道有注释，则在格子侧面弹出注释内容。"""
+        channel = next(
+            (c for c in self._get_channels() if c["id"] == channel_id), None
+        )
+        if channel is None:
+            return
+        note = channel.get("note", "")
+        if not note:
+            return
+        self._hide_note_tooltip()
+
+        tip = tk.Toplevel(self.root)
+        tip.overrideredirect(True)  # 无边框
+        tip.attributes("-topmost", True)
+        tk.Label(
+            tip,
+            text=note,
+            bg="#FFFFE0",
+            fg="#000000",
+            justify="left",
+            padx=8,
+            pady=6,
+            relief="solid",
+            bd=1,
+        ).pack()
+        # 定位到鼠标右侧
+        x = event.x_root + 15
+        y = event.y_root + 10
+        tip.geometry(f"+{x}+{y}")
+        self._note_tooltip = tip
+
+    def _hide_note_tooltip(self):
+        if self._note_tooltip is not None:
+            try:
+                self._note_tooltip.destroy()
+            except tk.TclError:
+                pass
+            self._note_tooltip = None
 
 
 class ChannelEditDialog(tk.Toplevel):
@@ -1053,7 +1180,7 @@ class FileSelectDialog(tk.Toplevel):
 class HelpDialog(tk.Toplevel):
     """帮助弹窗：展示说明文字（可多行换行），含"我知道了"按钮。"""
 
-    HELP_TEXT = "摸索摸索就会啦！\n如果有建议请告诉我。\n请多帮助等级低的小朋友吧！\nMade by 小曰哥 qq 958679431"
+    HELP_TEXT = "右键频道可以加注释！\n如果有建议请告诉我。\n请多帮助等级低的小朋友吧！\nMade by 小曰哥 qq 958679431"
 
     def __init__(self, parent):
         super().__init__(parent)
@@ -1083,6 +1210,69 @@ class HelpDialog(tk.Toplevel):
 
         _center_over_parent(self, parent)
         _bind_escape(self)
+
+
+class NoteEditDialog(tk.Toplevel):
+    """注释编辑弹窗：多行文本输入，含"确认""清除"按钮。"""
+
+    def __init__(self, parent, channel: dict, on_apply):
+        super().__init__(parent)
+        self.channel = channel
+        self.on_apply = on_apply
+
+        self.transient(parent)
+        self.grab_set()
+        self.title(f"编辑注释 - {channel['name']}")
+        self.resizable(False, False)
+
+        tk.Label(self, text="注释内容（支持换行）：", anchor="w").pack(
+            fill="x", padx=20, pady=(15, 5)
+        )
+
+        self.text = tk.Text(self, width=36, height=10, wrap="word")
+        self.text.pack(padx=20, pady=5)
+        # 预填现有注释
+        existing = channel.get("note", "")
+        if existing:
+            self.text.insert("1.0", existing)
+
+        btn_frame = tk.Frame(self)
+        btn_frame.pack(padx=20, pady=(5, 20))
+
+        tk.Button(
+            btn_frame,
+            text="确认",
+            width=10,
+            command=self._confirm,
+            bg="#4CAF50",
+            fg="#FFFFFF",
+            activebackground="#43A047",
+        ).pack(side="left", padx=5)
+
+        tk.Button(
+            btn_frame,
+            text="清除",
+            width=10,
+            command=self._clear,
+            bg="#9E9E9E",
+            fg="#FFFFFF",
+            activebackground="#757575",
+        ).pack(side="left", padx=5)
+
+        _center_over_parent(self, parent)
+        _bind_escape(self)
+
+    def _confirm(self):
+        """保存输入框中的注释并关闭弹窗。"""
+        self.channel["note"] = self.text.get("1.0", "end").strip()
+        self.on_apply(self.channel)
+        self.destroy()
+
+    def _clear(self):
+        """清空注释（字段与输入框），但不关闭弹窗。"""
+        self.channel["note"] = ""
+        self.on_apply(self.channel)
+        self.text.delete("1.0", "end")
 
 
 

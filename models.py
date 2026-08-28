@@ -38,6 +38,7 @@ class Channel:
     source: str = "init"
     recorded: bool = False
     checked_time: str = ""  # 最近一次"记为已查"的时刻（ISO 8601，空串表示从未记录）
+    note: str = ""  # 注释（可多行）
 
     def to_dict(self) -> dict:
         return {
@@ -47,6 +48,7 @@ class Channel:
             "source": self.source,
             "recorded": self.recorded,
             "checked_time": self.checked_time,
+            "note": self.note,
         }
 
     @classmethod
@@ -58,6 +60,7 @@ class Channel:
             source=str(data.get("source", "init")),
             recorded=bool(data.get("recorded", False)),
             checked_time=str(data.get("checked_time", "")),
+            note=str(data.get("note", "")),
         )
 
 
