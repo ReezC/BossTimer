@@ -882,7 +882,7 @@ class ChannelEditDialog(tk.Toplevel):
         base_label = f"基准时间：{channel['base_time']}\n来源：{'击杀' if channel['source'] == 'kill' else '初始化'}"
         tk.Label(self, text=base_label).pack(padx=20, pady=5)
 
-        # 是否已记录数据勾选框 + "记为已查"按钮（同一行）
+        # 是否已记录数据勾选框
         recorded_row = tk.Frame(self)
         recorded_row.pack(padx=20, pady=(5, 0))
 
@@ -893,12 +893,6 @@ class ChannelEditDialog(tk.Toplevel):
             variable=self.recorded_var,
             command=self._toggle_recorded,
         ).pack(side="left")
-
-        tk.Button(
-            recorded_row,
-            text="开启蹲守计时",
-            command=self._mark_checked,
-        ).pack(side="left", padx=(8, 0))
 
         tk.Button(
             self,
@@ -930,11 +924,6 @@ class ChannelEditDialog(tk.Toplevel):
     def _toggle_recorded(self):
         """勾选/取消勾选时即时同步 recorded 字段。"""
         self.channel["recorded"] = bool(self.recorded_var.get())
-        self.on_apply(self.channel)
-
-    def _mark_checked(self):
-        """记为已查：记录当前时刻，供未记录频道显示 a 分钟内的正计时。"""
-        self.channel["checked_time"] = get_server_time().isoformat()
         self.on_apply(self.channel)
 
     def _do_init(self):
@@ -1213,7 +1202,7 @@ class HelpDialog(tk.Toplevel):
 
 
 class NoteEditDialog(tk.Toplevel):
-    """注释编辑弹窗：多行文本输入，含"确认""清除"按钮。"""
+    """注释编辑弹窗：多行文本输入，含"开启蹲守计时""确认""清除"按钮。"""
 
     def __init__(self, parent, channel: dict, on_apply):
         super().__init__(parent)
@@ -1235,6 +1224,17 @@ class NoteEditDialog(tk.Toplevel):
         existing = channel.get("note", "")
         if existing:
             self.text.insert("1.0", existing)
+
+        # 开启蹲守计时：单独一排，与底部确认/清除隔开
+        tk.Button(
+            self,
+            text="开启蹲守计时",
+            width=10,
+            command=self._mark_checked,
+            bg="#FF9800",
+            fg="#FFFFFF",
+            activebackground="#F57C00",
+        ).pack(padx=20, pady=(5, 0))
 
         btn_frame = tk.Frame(self)
         btn_frame.pack(padx=20, pady=(5, 20))
@@ -1261,6 +1261,11 @@ class NoteEditDialog(tk.Toplevel):
 
         _center_over_parent(self, parent)
         _bind_escape(self)
+
+    def _mark_checked(self):
+        """开启蹲守计时：记录当前时刻，供未记录频道显示 a 分钟内的正计时。"""
+        self.channel["checked_time"] = get_server_time().isoformat()
+        self.on_apply(self.channel)
 
     def _confirm(self):
         """保存输入框中的注释并关闭弹窗。"""
