@@ -18,7 +18,7 @@
       "source": "init",
       "recorded": false,
       "checked_time": "2026-09-04T06:34:31.329701",
-      "note": "丶柒灬"
+      "note": "蝙蝠魔克星49"
     },
     {
       "id": 3,
@@ -27,7 +27,7 @@
       "source": "init",
       "recorded": false,
       "checked_time": "",
-      "note": ""
+      "note": "蝙蝠魔克星54"
     },
     {
       "id": 4,
@@ -36,7 +36,7 @@
       "source": "init",
       "recorded": false,
       "checked_time": "2026-09-04T03:00:44.083283",
-      "note": "嘟嘟本嘟"
+      "note": "蝙蝠魔克星53"
     },
     {
       "id": 5,
@@ -45,7 +45,7 @@
       "source": "kill",
       "recorded": false,
       "checked_time": "",
-      "note": ""
+      "note": "蝙蝠魔克星52"
     },
     {
       "id": 6,
@@ -54,16 +54,16 @@
       "source": "kill",
       "recorded": false,
       "checked_time": "2026-09-03T06:30:14.205767",
-      "note": ""
+      "note": "蝙蝠魔克星48"
     },
     {
       "id": 7,
       "name": "频道7",
-      "base_time": "2026-08-24T14:53:30",
-      "source": "kill",
+      "base_time": "2026-09-08T16:13:17.694296",
+      "source": "init",
       "recorded": false,
-      "checked_time": "2026-09-03T05:32:11.312540",
-      "note": "阿咩咩"
+      "checked_time": "",
+      "note": ""
     },
     {
       "id": 8,
@@ -72,7 +72,7 @@
       "source": "kill",
       "recorded": false,
       "checked_time": "2026-09-03T07:18:46.919136",
-      "note": "嘟嘟本嘟\n七六人总冠军"
+      "note": "蝙蝠魔克星56"
     },
     {
       "id": 9,
@@ -81,34 +81,34 @@
       "source": "kill",
       "recorded": false,
       "checked_time": "2026-09-04T03:06:14.398856",
-      "note": "特兰壳丝"
+      "note": "蝙蝠魔克星45"
     },
     {
       "id": 10,
       "name": "频道10",
-      "base_time": "2026-09-05T23:48:45.075185",
+      "base_time": "2026-09-07T23:02:46.804227",
       "source": "init",
-      "recorded": true,
-      "checked_time": "",
-      "note": ""
+      "recorded": false,
+      "checked_time": "2026-09-08T01:38:36.623556",
+      "note": "蝙蝠魔克星47"
     },
     {
       "id": 11,
       "name": "频道11",
-      "base_time": "2026-09-05T22:30:30",
+      "base_time": "2026-09-08T00:24:15",
       "source": "kill",
-      "recorded": true,
+      "recorded": false,
       "checked_time": "",
-      "note": ""
+      "note": "蝙蝠魔克星51"
     },
     {
       "id": 12,
       "name": "频道12",
-      "base_time": "2026-09-06T02:09:53.226910",
-      "source": "init",
-      "recorded": true,
+      "base_time": "2026-09-06T14:50:17",
+      "source": "kill",
+      "recorded": false,
       "checked_time": "",
-      "note": "west"
+      "note": "蝙蝠魔克星50"
     },
     {
       "id": 13,
@@ -117,7 +117,7 @@
       "source": "init",
       "recorded": false,
       "checked_time": "",
-      "note": ""
+      "note": "蝙蝠魔克星4"
     },
     {
       "id": 14,
@@ -135,16 +135,16 @@
       "source": "init",
       "recorded": false,
       "checked_time": "2026-09-04T03:20:09.219904",
-      "note": "空瓶可乐"
+      "note": "蝙蝠魔克星43"
     },
     {
       "id": 16,
       "name": "频道16",
-      "base_time": "2026-09-05T23:29:15",
-      "source": "kill",
-      "recorded": true,
+      "base_time": "2026-09-08T00:17:37.126218",
+      "source": "init",
+      "recorded": false,
       "checked_time": "",
-      "note": ""
+      "note": "蝙蝠魔克星46"
     },
     {
       "id": 17,
@@ -224,8 +224,8 @@
       "base_time": "2026-08-25T12:42:08",
       "source": "kill",
       "recorded": false,
-      "checked_time": "2026-09-02T13:15:28.058449",
-      "note": ""
+      "checked_time": "2026-09-08T02:01:51.360908",
+      "note": "疑似脚本：\n刀山未来"
     },
     {
       "id": 26,
@@ -252,7 +252,7 @@
       "source": "init",
       "recorded": false,
       "checked_time": "",
-      "note": "蝙蝠怪克星"
+      "note": "蝙蝠怪克星8"
     },
     {
       "id": 29,
@@ -261,7 +261,7 @@
       "source": "kill",
       "recorded": false,
       "checked_time": "",
-      "note": ""
+      "note": "蝙蝠魔克星55"
     },
     {
       "id": 30,
@@ -279,7 +279,7 @@
       "source": "init",
       "recorded": false,
       "checked_time": "2026-09-03T05:43:19.312610",
-      "note": "/找人 吾儿姓石名头\n/找人 QAQ四个泉"
+      "note": "蝙蝠魔克星11"
     },
     {
       "id": 32,
@@ -333,7 +333,7 @@
       "source": "init",
       "recorded": false,
       "checked_time": "",
-      "note": ""
+      "note": "蝙蝠魔克星58"
     },
     {
       "id": 38,
@@ -387,7 +387,7 @@
       "source": "init",
       "recorded": false,
       "checked_time": "2026-08-20T10:32:32.020837",
-      "note": ""
+      "note": "蝙蝠魔克星3"
     },
     {
       "id": 44,
@@ -401,29 +401,29 @@
     {
       "id": 45,
       "name": "频道45",
-      "base_time": "2026-09-06T00:07:29",
-      "source": "kill",
-      "recorded": true,
+      "base_time": "2026-09-07T03:17:28.173174",
+      "source": "init",
+      "recorded": false,
       "checked_time": "",
-      "note": "/找人 广东周星驰"
+      "note": "蝙蝠魔克星44"
     },
     {
       "id": 46,
       "name": "频道46",
-      "base_time": "2026-09-05T22:30:28",
-      "source": "kill",
-      "recorded": true,
+      "base_time": "2026-09-07T03:11:11.732031",
+      "source": "init",
+      "recorded": false,
       "checked_time": "",
-      "note": ""
+      "note": "蝙蝠魔克星57"
     },
     {
       "id": 47,
       "name": "频道47",
-      "base_time": "2026-09-05T23:40:00.106781",
+      "base_time": "2026-09-08T22:30:38.354852",
       "source": "init",
       "recorded": true,
       "checked_time": "",
-      "note": ""
+      "note": "蝙蝠魔克星42"
     },
     {
       "id": 48,
@@ -432,15 +432,15 @@
       "source": "kill",
       "recorded": false,
       "checked_time": "2026-09-04T06:36:59.826278",
-      "note": "鸽子"
+      "note": ""
     },
     {
       "id": 49,
       "name": "频道49",
-      "base_time": "2026-08-27T07:35:24",
-      "source": "kill",
-      "recorded": false,
-      "checked_time": "2026-09-03T05:49:58.159682",
+      "base_time": "2026-09-08T22:02:05.732236",
+      "source": "init",
+      "recorded": true,
+      "checked_time": "",
       "note": ""
     },
     {
@@ -450,7 +450,7 @@
       "source": "init",
       "recorded": false,
       "checked_time": "2026-09-04T06:40:42.259469",
-      "note": "小黑7"
+      "note": ""
     },
     {
       "id": 51,
@@ -468,7 +468,7 @@
       "source": "init",
       "recorded": false,
       "checked_time": "2026-09-04T06:42:47.833496",
-      "note": "天军9等兵"
+      "note": ""
     },
     {
       "id": 53,
@@ -477,16 +477,16 @@
       "source": "init",
       "recorded": false,
       "checked_time": "2026-09-04T06:45:00.733755",
-      "note": "87号技师"
+      "note": ""
     },
     {
       "id": 54,
       "name": "频道54",
-      "base_time": "2026-08-25T21:41:20.844289",
+      "base_time": "2026-09-08T19:47:17.720460",
       "source": "init",
-      "recorded": false,
-      "checked_time": "2026-09-03T06:43:46.052638",
-      "note": "小黑2\n猫猫盘盘"
+      "recorded": true,
+      "checked_time": "",
+      "note": ""
     },
     {
       "id": 55,
@@ -495,7 +495,7 @@
       "source": "kill",
       "recorded": false,
       "checked_time": "2026-09-03T05:52:02.063336",
-      "note": "/找人 从来不听情歌\n阿砚"
+      "note": ""
     },
     {
       "id": 56,
@@ -504,7 +504,7 @@
       "source": "init",
       "recorded": false,
       "checked_time": "2026-09-03T05:59:49.660564",
-      "note": "/找人 远风丶\n/找人 小黑7"
+      "note": ""
     },
     {
       "id": 57,
@@ -531,7 +531,7 @@
       "source": "init",
       "recorded": false,
       "checked_time": "2026-09-04T06:58:49.321877",
-      "note": "/找人 我就是英雄\n/找人 恰根玉溪\n我就是英雄"
+      "note": ""
     },
     {
       "id": 60,
@@ -540,7 +540,7 @@
       "source": "init",
       "recorded": false,
       "checked_time": "2026-09-04T07:01:04.487935",
-      "note": "从来不听情歌"
+      "note": ""
     }
   ]
 }

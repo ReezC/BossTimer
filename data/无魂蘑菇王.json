@@ -419,9 +419,9 @@
     {
       "id": 47,
       "name": "频道47",
-      "base_time": "2026-09-02T15:39:33.858000",
+      "base_time": "2026-09-08T16:28:52.951486",
       "source": "init",
-      "recorded": false,
+      "recorded": true,
       "checked_time": "",
       "note": ""
     },
